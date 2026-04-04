@@ -696,6 +696,7 @@ function getKST() {
 }
 
 
+
 function report(msg, type = 'info') {
     const icon = type === 'success' ? '\u2705' : type === 'warning' ? '\u26A0\uFE0F' : type === 'error' ? '\u274C' : '\u2139\uFE0F';
     const logMsg = `[${getKST().toLocaleTimeString('ko-KR')}] ${icon} ${msg}`;
@@ -704,9 +705,11 @@ function report(msg, type = 'info') {
 
 
 
+
+
 function clean(raw, mode = 'text') {
     if (!raw) return mode === 'arr' ? '[]' : '';
-    let txt = raw.replace(/`\\`\\`(html|json|javascript|js|css)?/gi, '').replace(/`\\`\\`/g, '').trim();
+    let txt = raw.replace(/```(html|json|javascript|js|css)?/gi, '').replace(/```/g, '').trim();
     if (mode === 'arr') {
         const start = txt.indexOf('[');
         const end = txt.lastIndexOf(']');
@@ -714,6 +717,7 @@ function clean(raw, mode = 'text') {
     }
     return txt;
 }
+
 
 
 async function callAI(model, prompt) {
@@ -901,7 +905,7 @@ async function genThumbnail(meta, model, ratio = '16:9') {
         }
         lines.push(line.trim());
 
-        // ? 스?  ? ? 무 많으 ? 트 ? 기 ? 동 축소
+        // ? 스?  ? 무 많으 ? 트 ? 기 ? 동 축소
         if (lines.length > 4) {
             fontSize = Math.floor(fontSize * 0.82);
             ctx.font = `bold ${fontSize}px "Malgun Gothic", "Apple SD Gothic Neo", "NanumGothic", "Pretendard", sans-serif`;
@@ -926,12 +930,12 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
     if (extraLinks.length > 0) {
         const links = extraLinks.map((l, idx) => `[Spoke ${idx + 1}] Title: ${l.title}, URL: ${l.url}`).join('\n');
         const isKo = lang === 'ko';
-        const btnText = isKo ? "? 세?보기 ? : "Read More ?;
+        const btnText = isKo ? "\uc790\uc138\ud788 \ubcf4\uae30 \ud83d\ude80" : "Read More \ud83d\ude80";
         const contextPrompt = isKo
             ? `[INTERNAL_LINK_PUNITIVE_MISSION]: ?? 스?  ? 메인 ? 브(Pillar) 글? 니? 
             ??  ? 규칙: ? 래 ? 공?${extraLinks.length}개의 ? 브 글 ? 약 ? 션 ? 에?**반드?각각 ? 나?* ? 래 버튼 코드 ? 입? 세?
             코드 ? 시: <a href='? 브글URL' class='cluster-btn'>${btnText}</a>
-            ? 락 ?SEO ? 략?? 전?? 패?  ? ? ? 확?${extraLinks.length}개의 버튼?본문 곳곳?박 ? ? 어?? 니?`
+            ? 락 ?SEO ? 략?? 전?? 패?  ? ? 확?${extraLinks.length}개의 버튼?본문 곳곳?박 ? 어?? 니?`
             : `[INTERNAL_LINK_PUNITIVE_MISSION]: This is a Pillar post. 
             ?STRICT RULE: After EACH of the following ${extraLinks.length} summary sections, you MUST insert the following button code:
             Example: <a href='SpokeURL' class='cluster-btn'>${btnText}</a>
@@ -945,18 +949,18 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
     report(`?   [AI ? 롬? 트 ? 성  ?: 리서 ? 이?${searchData.length}?? 함...`);
 
     const h1Instruction = lang === 'ko'
-        ? "<h1>(10? 차 SEO ? 문가?구 ? ? 단 ? 출?? 한 롱테?? 워?? 목)</h1>"
+        ? "<h1>(10? 차 SEO ? 문가?구 ? 단 ? 출?? 한 롱테?? 워?? 목)</h1>"
         : "<h1>(SEO Optimized Long-tail Keyword Title for Google Ranking)</h1>";
 
     // MISSION 분량 ? 보 ? 한 강력?지 ?추 ?
     const m1Prompt = MASTER_GUIDELINE + `
 [MISSION: FULL POST GENERATION] 
-? 확?? 래 ? 맷?맞춰??번에 모든 글?? 성? 야 ? 니? ?  ? ? 맷?? 기지 마세?
+? 확?? 래 ? 맷?맞춰??번에 모든 글?? 성? 야 ? 니? ?  ? 맷?? 기지 마세?
 ? 체 글 분량?  6,000?8,000?? 상 ? 보? 도 ? 세? 게 ? ?? 세? ? 히, 짧게 ? 어가지 말고 본문?? 션 ? 명?매우 길게 ? 려?? 니?
 
 [? 수 ? 자?컴포? 트 - 반드?본문?? 함? 세?:
 ?배치 ? 략:
-    - 글?지루해지지 ? 도 ? H2 ? 스?  ? 2개째 ? 장? 는 ? ? 밍마다 ? 입? 여 ? 자?? 선?? 절? 게 ? 기? 세?
+    - 글?지루해지지 ? 도 ? H2 ? 스?  ? 2개째 ? 장? 는 ? 밍마다 ? 입? 여 ? 자?? 선?? 절? 게 ? 기? 세?
     - **[Time Awareness]**: Today's date is ${getKST().toISOString().split('T')[0]}. Always write based on the latest available information as of today. If referencing years, focus on the current year and future trends.
 
 (A) ? 사? 트 박스 ?<div class='insight-box'><strong>?   Key Insight</strong><br>? 심 ? 인?? 용</div> ?최소 2 ?
@@ -970,7 +974,7 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
 
 [META_DATA_START]
 {
-  "IMG_0": { "mainTitle": "? 네? 용 매력? 인 짧 ? ? 목", "bgPrompt": "? 네?배경 ?  ?지 묘사 ? 문 ? 롬? 트" },
+  "IMG_0": { "mainTitle": "? 네? 용 매력? 인 짧 ? 목", "bgPrompt": "? 네?배경 ?  ?지 묘사 ? 문 ? 롬? 트" },
   "IMG_1": { "prompt": "본문 첫번 ?  ?지 묘사 ? 문 ? 롬? 트" },
   "IMG_2": { "prompt": "본문 ? 번 ?  ?지 묘사 ? 문 ? 롬? 트" },
   "IMG_3": { "prompt": "본문 ? 번 ?  ?지 묘사 ? 문 ? 롬? 트" },
@@ -1030,7 +1034,7 @@ ${langTag}`;
             if (metaJson.IMG_3) imgMetas[3] = metaJson.IMG_3;
             if (metaJson.IMG_PINTEREST) imgMetas['P'] = metaJson.IMG_PINTEREST;
         }
-    } catch (e) { report('? ️ ? 규 메 ? ? 싱 ? 패, ? 거?? 싱 ? 도', 'warning'); }
+    } catch (e) { report('? ️ ? 규 메 ? 싱 ? 패, ? 거?? 싱 ? 도', 'warning'); }
 
     // ? 거?? 맷 ? 싱 (IMG_0: { mainTitle: "...", bgPrompt: "..." })
     if (!m0) {
@@ -1078,7 +1082,7 @@ ${langTag}`;
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             finalHtml = finalHtml.replace(reg, `<div style='text-align:center; margin:35px 0;'><img src='${urlI}' alt='${target}' style='width:100%; border-radius:12px;'></div>`);
         } else {
-            // 만약 치환?  ? ? 다 ?H2 ? 그 ? 에 강제 ?  ?지 ?주입
+            // 만약 치환?  ? 다 ?H2 ? 그 ? 에 강제 ?  ?지 ?주입
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             let injected = false;
             let count = 0;
@@ -1271,7 +1275,7 @@ const MASTER_GUIDELINE = `
 Vue blog ?? 합 멀? 플? 폼 블로 ? 이? 트
 ? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━? ━
 
-? 용?  ? ? 워?  ? ? 력? 면, ? 래 지침을 준? 하?
+? 용?  ? 워?  ? 력? 면, ? 래 지침을 준? 하?
 ? 이 ?블로 ?/ 블로그스?/ ? 드? 레? 에 바로 발행 가? 한
 HTML ? 스코드 ? 성? 다.
 
@@ -1283,14 +1287,14 @@ HTML ? 스코드 ? 성? 다.
 [GLOBAL LANGUAGE ROUTING & TRANSLATION]
 ?[? 어 ? 선? 위  ?: ? 롬? 트  ? 래?명시?**[TARGET_LANGUAGE]** 가 최우? 이??  ? 인 지침입? 다.
   1. 만약 **[TARGET_LANGUAGE]: Korean** ? 라 ? 모든 ? 용?? 국? 로 ? 성? 세?
-  2. 만약 **[TARGET_LANGUAGE]: English** ? 면, ? 력 ? 워?  ? ?  ? 이 **100% ? 어 ?  ?? 어로만 ? 성**? 세?
+  2. 만약 **[TARGET_LANGUAGE]: English** ? 면, ? 력 ? 워?  ?  ? 이 **100% ? 어 ?  ?? 어로만 ? 성**? 세?
   3. 지? 된 ? 어 모드?맞춰 모든 UI 컴포? 트 ? 름  ?  ?지 메 ? 이? 도 ? 당 ? 어 ? 동 번역? 여 출력? 세?
 
 ? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═
   PART A ?? 심 철학 (4?  ? 칙)
 ? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═
 
-?? 게 (Less is More): 강조 박스 글 ? 체 3~4 ? ? 속 배치 금 ?.
+?? 게 (Less is More): 강조 박스 글 ? 체 3~4 ? 속 배치 금 ?.
 ?? 확? 게 (Precision): 모든 ? 치?검?? 이?기반. 출처 명시.
 ?진짜처럼 (Authenticity): AI ? 턴 ? 피. ? 제 블로거의 불규칙한 ? 사. 구어 ?줄임 ?don't, it's ??? 극 ? 용? 고 ? 투? 인 AI ? 프? 을 배제? 라.
 ??? 게 (Revenue First): 체류? 간 극 ?? ? 드? 스 최적?? 백.
@@ -1300,27 +1304,27 @@ HTML ? 스코드 ? 성? 다.
 ? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═
 
 ?분량: 7,000?~ 최 ? 9,000?(지? 된 TARGET_LANGUAGE ? 스?기 ?)
-  ?[초강?경고]: ? 약?개조?리스? 만 ? 발?  ? 말고, ? 도? 인 ? 사(? 문가?? 구체?? 시, ?  ?? 명) ? 스?? 락(<p>)? 로 길게 ? ? 내?분량?강제 ? 리? 가? 성?? 해 문단?? 게 쪼개? 요.
+  ?[초강?경고]: ? 약?개조?리스? 만 ? 발?  ? 말고, ? 도? 인 ? 사(? 문가?? 구체?? 시, ?  ?? 명) ? 스?? 락(<p>)? 로 길게 ? 내?분량?강제 ? 리? 가? 성?? 해 문단?? 게 쪼개? 요.
 
 ?출력 규칙:
   [1] ? 단 ?  ?지 메 ? 이? IMG_0~3 (JSON ? 식)
   [2] 본문 HTML: <h1> ? 그 금 ?.  ? 목?  <h2>.
   [3] ?  ?지 치환? [[IMG_0]], [[IMG_1]], [[IMG_2]], [[IMG_3]]
-  [4] **? 목 ? 자 금 ?**: 모든 ? 목(H2, H3)?'1.', '2.', 'Step 1.' 같 ? ? 자?? 번?**?  ? ?* 붙이지 마세? 매끄? 운 ? 스?? 목 ? 용? 니? (AI ? 턴 ? 피 ? 심)
+  [4] **? 목 ? 자 금 ?**: 모든 ? 목(H2, H3)?'1.', '2.', 'Step 1.' 같 ? 자?? 번?**?  ? ?* 붙이지 마세? 매끄? 운 ? 스?? 목 ? 용? 니? (AI ? 턴 ? 피 ? 심)
   [5] **AI ? 투??  ? 금 ?**: \`In conclusion\`, \`In today's fast-paced world\`, \`Let's dive in\`, \`Slower than molasses in January\` ?? 형? 인 AI ? 프?? 로 ?비유 ???지? 세?
   [6] **비유??  ??*: ? 크 ? 문가? 게 ?  ? 인 비유 ? 세?(? 'Slower than a 56k modem', 'Taking longer to boot than it does to brew a coffee' ?.
   [7] **경험 ? 사 ? 턴 ?  ??*: 매번 'I once had a client...' ? 작?  ? 마세? ? ?"The biggest culprit I see in my shop is...", "In the field, I always insist on..." ?? 제 ? 리?? 업? 의 말투 ? 으? 요.
   [8] **구어 ?Contractions)  ?권위**: \`Don't\`, \`It's\` ?기본? 로 ? 되, FAQ? 서 ? 신 ? 는 \`I guess\`, \`you know?\`?빼버리고 "In my professional opinion," ? 는 "Trust me, your hardware will thank you." ?마무리하? 요.
-  [9] **2026?리얼리티**: 2026?최신 ? 렌?AI Accelerator NPU 관 ? Browser Memory Saver ? ? 연? 럽 ?? ? 급? 여 글?? 선?  ? ? 이? 요.
+  [9] **2026?리얼리티**: 2026?최신 ? 렌?AI Accelerator NPU 관 ? Browser Memory Saver ? 연? 럽 ?? ? 급? 여 글?? 선?  ? 이? 요.
   [10] **리듬?변 ?(Dynamic Rhythm)**: 문장 ?문단?길이 ? 도? 으 ? 섞? 세? 3~4줄의  ? 명 ? 에?반드??마디짜리 짧 ? 문장(? "It works.", "No exceptions.")?배치? 세?
-  [11] **개조?지?*: 모든 ? 보 ?리스?Bullet points) ? 리?  ? 마세? ? 심 ? 하? 는 ? 스?? 락 ? 에??  ?? 휘 ?길게 ? ? 쓰?것이 ? 씬 ?? 간? 입? 다.
+  [11] **개조?지?*: 모든 ? 보 ?리스?Bullet points) ? 리?  ? 마세? ? 심 ? 하? 는 ? 스?? 락 ? 에??  ?? 휘 ?길게 ? 쓰?것이 ? 씬 ?? 간? 입? 다.
   [12] **결론 ? 니? 화**: 'Conclusion' ? ?? 황?맞는 ? 특?H2 ? 목?? 용? 고, \`closing-box\`가  ??  ?? ? 합? 다.
 
 ? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═
   PART D ?Zero-AI Signature (금 ?  ? 수 지 ?
 ? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═? ═
-  [1] **금 ? ? 속?*: \`In addition\`, \`Furthermore\`, \`Moreover\`, \`Additionally\`, \`Consequently\` ?기계? 인 ? 결?  ? ?  ? ?  ? 마세? ? ?문맥? 으 ? 연? 럽 ? 어가거나(? "Here's the catch...", "But wait, there's more..."), ?문장?? 어 ?받아 ? 명? 세?
-  [2] **금 ? ? 투?*: \`It is important to\`, \`It is crucial to\`, \`Make sure to\`, \`Not only A but also B\` ?교과? 적?? 턴?금 ? 니?
+  [1] **금 ? 속?*: \`In addition\`, \`Furthermore\`, \`Moreover\`, \`Additionally\`, \`Consequently\` ?기계? 인 ? 결?  ?  ?  ? 마세? ? ?문맥? 으 ? 연? 럽 ? 어가거나(? "Here's the catch...", "But wait, there's more..."), ?문장?? 어 ?받아 ? 명? 세?
+  [2] **금 ? 투?*: \`It is important to\`, \`It is crucial to\`, \`Make sure to\`, \`Not only A but also B\` ?교과? 적?? 턴?금 ? 니?
   [3] **부?? 발 금 ?**: \`Regularly\`, \`Properly\`, \`Effectively\` 같이 ? 혼 ? 는 부?  ? 빼고, 구체? 으 ? 떻 ? 는지 ? 동 ? 주 ?묘사? 세?
   [4] **구조?? 격**: [? 론-본론1,2,3-결론]?뻔한 구조 ?버리? 요. 중간?갑자 ?개인? 인 고찰??  ?거나, ? 패 ?  ? ?깊게 ? 고? 는 ?? 자가 ? 보?'리듬'?? 측??? 게 ? 세?
   [5] **? 테? 의 ?*: "기기 ? 기? 으 ?  ? 세?? 고 ?  ? 말고, "? 업?구석?? 인 고양?? 이 ? 신?쿨러 ? 도 ?15% ?   ? 습? 다"? 고 구체? 으 ?말하? 요.
@@ -1405,6 +1409,7 @@ function getKST() {
 }
 
 
+
 function report(msg, type = 'info') {
     const icon = type === 'success' ? '\u2705' : type === 'warning' ? '\u26A0\uFE0F' : type === 'error' ? '\u274C' : '\u2139\uFE0F';
     const logMsg = `[${getKST().toLocaleTimeString('ko-KR')}] ${icon} ${msg}`;
@@ -1413,9 +1418,11 @@ function report(msg, type = 'info') {
 
 
 
+
+
 function clean(raw, mode = 'text') {
     if (!raw) return mode === 'arr' ? '[]' : '';
-    let txt = raw.replace(/`\\`\\`(html|json|javascript|js|css)?/gi, '').replace(/`\\`\\`/g, '').trim();
+    let txt = raw.replace(/```(html|json|javascript|js|css)?/gi, '').replace(/```/g, '').trim();
     if (mode === 'arr') {
         const start = txt.indexOf('[');
         const end = txt.lastIndexOf(']');
@@ -1423,6 +1430,7 @@ function clean(raw, mode = 'text') {
     }
     return txt;
 }
+
 
 
 async function callAI(model, prompt) {
@@ -1578,7 +1586,7 @@ async function genThumbnail(meta, model, ratio = '16:9') {
         }
         lines.push(line.trim());
 
-        // ? 스?  ? ? 무 많으 ? 트 ? 기 ? 동 축소
+        // ? 스?  ? 무 많으 ? 트 ? 기 ? 동 축소
         if (lines.length > 4) {
             fontSize = Math.floor(fontSize * 0.82);
             ctx.font = `bold ${fontSize}px "Malgun Gothic", "Apple SD Gothic Neo", "NanumGothic", "Pretendard", sans-serif`;
@@ -1603,12 +1611,12 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
     if (extraLinks.length > 0) {
         const links = extraLinks.map((l, idx) => `[Spoke ${idx + 1}] Title: ${l.title}, URL: ${l.url}`).join('\n');
         const isKo = lang === 'ko';
-        const btnText = isKo ? "? 세?보기 ? : "Read More ?;
+        const btnText = isKo ? "\uc790\uc138\ud788 \ubcf4\uae30 \ud83d\ude80" : "Read More \ud83d\ude80";
         const contextPrompt = isKo
             ? `[INTERNAL_LINK_PUNITIVE_MISSION]: ?? 스?  ? 메인 ? 브(Pillar) 글? 니? 
             ??  ? 규칙: ? 래 ? 공?${extraLinks.length}개의 ? 브 글 ? 약 ? 션 ? 에?**반드?각각 ? 나?* ? 래 버튼 코드 ? 입? 세?
             코드 ? 시: <a href='? 브글URL' class='cluster-btn'>${btnText}</a>
-            ? 락 ?SEO ? 략?? 전?? 패?  ? ? ? 확?${extraLinks.length}개의 버튼?본문 곳곳?박 ? ? 어?? 니?`
+            ? 락 ?SEO ? 략?? 전?? 패?  ? ? 확?${extraLinks.length}개의 버튼?본문 곳곳?박 ? 어?? 니?`
             : `[INTERNAL_LINK_PUNITIVE_MISSION]: This is a Pillar post. 
             ?STRICT RULE: After EACH of the following ${extraLinks.length} summary sections, you MUST insert the following button code:
             Example: <a href='SpokeURL' class='cluster-btn'>${btnText}</a>
@@ -1622,18 +1630,18 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
     report(`?   [AI ? 롬? 트 ? 성  ?: 리서 ? 이?${searchData.length}?? 함...`);
 
     const h1Instruction = lang === 'ko'
-        ? "<h1>(10? 차 SEO ? 문가?구 ? ? 단 ? 출?? 한 롱테?? 워?? 목)</h1>"
+        ? "<h1>(10? 차 SEO ? 문가?구 ? 단 ? 출?? 한 롱테?? 워?? 목)</h1>"
         : "<h1>(SEO Optimized Long-tail Keyword Title for Google Ranking)</h1>";
 
     // MISSION 분량 ? 보 ? 한 강력?지 ?추 ?
     const m1Prompt = MASTER_GUIDELINE + `
 [MISSION: FULL POST GENERATION] 
-? 확?? 래 ? 맷?맞춰??번에 모든 글?? 성? 야 ? 니? ?  ? ? 맷?? 기지 마세?
+? 확?? 래 ? 맷?맞춰??번에 모든 글?? 성? 야 ? 니? ?  ? 맷?? 기지 마세?
 ? 체 글 분량?  6,000?8,000?? 상 ? 보? 도 ? 세? 게 ? ?? 세? ? 히, 짧게 ? 어가지 말고 본문?? 션 ? 명?매우 길게 ? 려?? 니?
 
 [? 수 ? 자?컴포? 트 - 반드?본문?? 함? 세?:
 ?배치 ? 략:
-    - 글?지루해지지 ? 도 ? H2 ? 스?  ? 2개째 ? 장? 는 ? ? 밍마다 ? 입? 여 ? 자?? 선?? 절? 게 ? 기? 세?
+    - 글?지루해지지 ? 도 ? H2 ? 스?  ? 2개째 ? 장? 는 ? 밍마다 ? 입? 여 ? 자?? 선?? 절? 게 ? 기? 세?
     - **[Time Awareness]**: Today's date is ${getKST().toISOString().split('T')[0]}. Always write based on the latest available information as of today. If referencing years, focus on the current year and future trends.
 
 (A) ? 사? 트 박스 ?<div class='insight-box'><strong>?   Key Insight</strong><br>? 심 ? 인?? 용</div> ?최소 2 ?
@@ -1647,7 +1655,7 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
 
 [META_DATA_START]
 {
-  "IMG_0": { "mainTitle": "? 네? 용 매력? 인 짧 ? ? 목", "bgPrompt": "? 네?배경 ?  ?지 묘사 ? 문 ? 롬? 트" },
+  "IMG_0": { "mainTitle": "? 네? 용 매력? 인 짧 ? 목", "bgPrompt": "? 네?배경 ?  ?지 묘사 ? 문 ? 롬? 트" },
   "IMG_1": { "prompt": "본문 첫번 ?  ?지 묘사 ? 문 ? 롬? 트" },
   "IMG_2": { "prompt": "본문 ? 번 ?  ?지 묘사 ? 문 ? 롬? 트" },
   "IMG_3": { "prompt": "본문 ? 번 ?  ?지 묘사 ? 문 ? 롬? 트" },
@@ -1707,7 +1715,7 @@ ${langTag}`;
             if (metaJson.IMG_3) imgMetas[3] = metaJson.IMG_3;
             if (metaJson.IMG_PINTEREST) imgMetas['P'] = metaJson.IMG_PINTEREST;
         }
-    } catch (e) { report('? ️ ? 규 메 ? ? 싱 ? 패, ? 거?? 싱 ? 도', 'warning'); }
+    } catch (e) { report('? ️ ? 규 메 ? 싱 ? 패, ? 거?? 싱 ? 도', 'warning'); }
 
     // ? 거?? 맷 ? 싱 (IMG_0: { mainTitle: "...", bgPrompt: "..." })
     if (!m0) {
@@ -1755,7 +1763,7 @@ ${langTag}`;
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             finalHtml = finalHtml.replace(reg, `<div style='text-align:center; margin:35px 0;'><img src='${urlI}' alt='${target}' style='width:100%; border-radius:12px;'></div>`);
         } else {
-            // 만약 치환?  ? ? 다 ?H2 ? 그 ? 에 강제 ?  ?지 ?주입
+            // 만약 치환?  ? 다 ?H2 ? 그 ? 에 강제 ?  ?지 ?주입
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             let injected = false;
             let count = 0;
@@ -1895,14 +1903,14 @@ async function run() {
     const pillarTitle = list[0]; const spokes = list.slice(1);
     const subLinks = [];
 
-    // [Time Optimization] ?  ? ?기 ? ? 간 ? 정
+    // [Time Optimization] ?  ? ?기 ? 간 ? 정
     let currentTime = getKST();
     if (config.schedule_time) {
         const [sh, sm] = config.schedule_time.split(':');
         currentTime.setHours(parseInt(sh), parseInt(sm), 0, 0);
     }
 
-    // 2? 계: Spoke(? 브 글) 먼 ? ? 성 - ? 제 URL ? 보
+    // 2? 계: Spoke(? 브 글) 먼 ? 성 - ? 제 URL ? 보
     for (let i = 0; i < spokes.length; i++) {
         // [? 심] ? 덤 지?? 정 ?'글 ? 나? 1~120 ? 덤 ? 간 ? 약
         if (config.random_delay) {
@@ -1921,7 +1929,7 @@ async function run() {
         await new Promise(r => setTimeout(r, 30000));
     }
 
-    // 3? 계: Pillar(메인 글) 마 ? ? 성
+    // 3? 계: Pillar(메인 글) 마 ? 성
     report(`?   최종 메인 ? 브(Pillar) 글 ? 성: ${pillarTitle}`);
     if (config.random_delay) {
         const finalDelay = Math.floor(Math.random() * 120) + 1;
