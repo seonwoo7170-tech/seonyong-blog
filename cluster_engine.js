@@ -14,7 +14,7 @@ if (fs.existsSync('secrets_config.json')) {
         }
         console.log('✅Local secrets loaded from secrets_config.json');
     } catch (e) {
-        console.log('🚀 ️ secrets_config.json load error: ' + e.message);
+        console.log('\uD83D\uDE80 ️ secrets_config.json load error: ' + e.message);
     }
 }
 
@@ -696,14 +696,14 @@ function getKST() {
 }
 
 function report(msg, type = 'info') {
-    const icon = type === 'success' 🚀 '✅ : type === 'warning' 🚀 '🚀 ️' : type === 'error' 🚀 '🚀  ' : '🚀 ️';
+    const icon = type === 'success' ? '\u2705' : type === 'warning' ? '\u26A0\uFE0F' : type === 'error' ? '\u274C' : '\u2139\uFE0F';
     const logMsg = `[${getKST().toLocaleTimeString('ko-KR')}] ${icon} ${msg}`;
     console.log(logMsg);
 }
 
 function clean(raw, mode = 'text') {
-    if (!raw) return mode === 'arr' 🚀 '[]' : '';
-    let txt = raw.replace(/`\`\`(html|json|javascript|js|css)🚀/gi, '').replace(/`\`\`/g, '').trim();
+    if (!raw) return mode === 'arr' \uD83D\uDE80 '[]' : '';
+    let txt = raw.replace(/`\`\`(html|json|javascript|js|css)\uD83D\uDE80/gi, '').replace(/`\`\`/g, '').trim();
     if (mode === 'arr') {
         const start = txt.indexOf('[');
         const end = txt.lastIndexOf(']');
@@ -719,7 +719,7 @@ async function callAI(model, prompt) {
     } catch (e) {
         const msg = e.message.toLowerCase();
         if (msg.includes('429') || msg.includes('quota') || msg.includes('exhausted')) {
-            report('✅[API 🚀 당✅초과] 60 ✅✅ 시 🚀 도🚀 니✅..', 'warning');
+            report('✅[API \uD83D\uDE80 당✅초과] 60 ✅✅ 시 \uD83D\uDE80 도\uD83D\uDE80 니✅..', 'warning');
             await new Promise(r => setTimeout(r, 60000));
             return callAI(model, prompt);
         }
@@ -729,14 +729,14 @@ async function callAI(model, prompt) {
 
 async function searchSerper(query, lang) {
     try {
-        report(`🚀   [🚀 시 🚀리서 🚀: "${query}" 관✅구 🚀 검✅🚀 이✅🚀 집  🚀..`);
-        const res = await axios.post('https://google.serper.dev/search', { q: query, gl: lang === 'ko' 🚀 'kr' : 'us', hl: lang }, { headers: { 'X-API-KEY': process.env.SERPER_API_KEY, 'Content-Type': 'application/json' }, timeout: 15000 });
+        report(`\uD83D\uDE80   [\uD83D\uDE80 시 \uD83D\uDE80리서 \uD83D\uDE80: "${query}" 관✅구 \uD83D\uDE80 검✅\uD83D\uDE80 이✅\uD83D\uDE80 집  \uD83D\uDE80..`);
+        const res = await axios.post('https://google.serper.dev/search', { q: query, gl: lang === 'ko' \uD83D\uDE80 'kr' : 'us', hl: lang }, { headers: { 'X-API-KEY': process.env.SERPER_API_KEY, 'Content-Type': 'application/json' }, timeout: 15000 });
         const data = res.data.organic || [];
         const result = { text: data.slice(0, 5).map(o => `Title: ${o.title}\nSnippet: ${o.snippet}`).join('\n\n') };
-        report(`🚀   [🚀 이✅🚀 보]: 🚀 위 ${data.length} 🚀검✅결과 분석 🚀 료`);
+        report(`\uD83D\uDE80   [\uD83D\uDE80 이✅\uD83D\uDE80 보]: \uD83D\uDE80 위 ${data.length} \uD83D\uDE80검✅결과 분석 \uD83D\uDE80 료`);
         return result;
     } catch (e) {
-        report(`🚀 ️ [Serper 🚀 러]: ${e.message}`, 'warning');
+        report(`\uD83D\uDE80 ️ [Serper \uD83D\uDE80 러]: ${e.message}`, 'warning');
         return { text: '' };
     }
 }
@@ -768,7 +768,7 @@ async function uploadToGithub(buffer, filename) {
         console.log('✅ GitHub Gallery Upload Success: ' + finalUrl);
         return finalUrl;
     } catch (e) {
-        console.log('⚠️ GitHub Upload Error: ' + (e.response🚀.data🚀.message || e.message));
+        console.log('⚠️ GitHub Upload Error: ' + (e.response\uD83D\uDE80.data\uD83D\uDE80.message || e.message));
         return '';
     }
 }
@@ -777,7 +777,7 @@ async function genImg(prompt, model, idx, ratio = '16:9', autoUpload = true) {
     try {
         const revised = await callAI(model, `Provide a high-quality stable diffusion prompt (${ratio}) based on: ${prompt}. Output only prompt.`);
         const cleanPrompt = revised.trim().replace(/^"|"$/g, '');
-        report(`🚀   [🚀  🚀지 🚀 계]: ${cleanPrompt.substring(0, 100)}${cleanPrompt.length > 100 🚀 '...' : ''}`);
+        report(`\uD83D\uDE80   [\uD83D\uDE80  \uD83D\uDE80지 \uD83D\uDE80 계]: ${cleanPrompt.substring(0, 100)}${cleanPrompt.length > 100 \uD83D\uDE80 '...' : ''}`);
 
         let imageUrl = '';
         const kieKey = process.env.KIE_API_KEY;
@@ -785,37 +785,37 @@ async function genImg(prompt, model, idx, ratio = '16:9', autoUpload = true) {
         // 1. Kie.ai (Premium Image Generation)
         if (kieKey && kieKey.length > 5) {
             try {
-                report(`   ✅[Kie.ai] z-image 🚀 출  🚀(🚀  🚀지 🚀 성)...`);
+                report(`   ✅[Kie.ai] z-image \uD83D\uDE80 출  \uD83D\uDE80(\uD83D\uDE80  \uD83D\uDE80지 \uD83D\uDE80 성)...`);
                 const cr = await axios.post('https://api.kie.ai/api/v1/jobs/createTask', {
                     model: 'z-image',
                     input: { prompt: revised + ', high-end, editorial photography, 8k', aspect_ratio: ratio }
                 }, { headers: { Authorization: 'Bearer ' + kieKey }, timeout: 20000 });
 
-                const tid = cr.data.taskId || cr.data.data🚀.taskId;
+                const tid = cr.data.taskId || cr.data.data\uD83D\uDE80.taskId;
                 if (tid) {
                     for (let a = 0; a < 15; a++) {
                         await new Promise(r => setTimeout(r, 6000));
-                        const pr = await axios.get('https://api.kie.ai/api/v1/jobs/recordInfo🚀taskId=' + tid, { headers: { Authorization: 'Bearer ' + kieKey }, timeout: 10000 });
-                        const state = pr.data.state || pr.data.data🚀.state;
+                        const pr = await axios.get('https://api.kie.ai/api/v1/jobs/recordInfo\uD83D\uDE80taskId=' + tid, { headers: { Authorization: 'Bearer ' + kieKey }, timeout: 10000 });
+                        const state = pr.data.state || pr.data.data\uD83D\uDE80.state;
                         if (state === 'success') {
-                            const resData = pr.data.resultJson || pr.data.data🚀.resultJson;
-                            const resJson = typeof resData === 'string' 🚀 JSON.parse(resData) : resData;
+                            const resData = pr.data.resultJson || pr.data.data\uD83D\uDE80.resultJson;
+                            const resJson = typeof resData === 'string' \uD83D\uDE80 JSON.parse(resData) : resData;
                             imageUrl = resJson.resultUrls[0];
                             break;
                         }
                         if (state === 'fail' || state === 'failed') break;
                     }
                 }
-            } catch (e) { report(`   ✅[Kie.ai] 중단 (${e.message}): 🚀 음 🚀 진 🚀 환`, 'warning'); }
+            } catch (e) { report(`   ✅[Kie.ai] 중단 (${e.message}): \uD83D\uDE80 음 \uD83D\uDE80 진 \uD83D\uDE80 환`, 'warning'); }
         }
 
         // 2. Pollinations.ai (FLUX Fallback)
         if (!imageUrl) {
-            const [w, h] = ratio === '2:3' 🚀 [800, 1200] : [1080, 720];
-            imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(revised)}🚀width=${w}&height=${h}&seed=${Math.floor(Math.random() * 99999)}&nologo=true&enhance=true`;
+            const [w, h] = ratio === '2:3' \uD83D\uDE80 [800, 1200] : [1080, 720];
+            imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(revised)}\uD83D\uDE80width=${w}&height=${h}&seed=${Math.floor(Math.random() * 99999)}&nologo=true&enhance=true`;
         }
 
-        // 3. ImgBB Upload (🚀 구 보 🚀)
+        // 3. ImgBB Upload (\uD83D\uDE80 구 보 \uD83D\uDE80)
         const res = await axios.get(imageUrl, { responseType: 'arraybuffer', timeout: 15000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         if (res.status !== 200) throw new Error("Image download failed");
 
@@ -859,14 +859,14 @@ async function genThumbnail(meta, model, ratio = '16:9') {
         const bgBuffer = await genImg(meta.bgPrompt || meta.mainTitle, model, 0, ratio, false);
         const bg = await loadImage(bgBuffer);
         const isPin = ratio === '2:3';
-        const w = isPin 🚀 800 : 1200;
-        const h = isPin 🚀 1200 : 630;
+        const w = isPin \uD83D\uDE80 800 : 1200;
+        const h = isPin \uD83D\uDE80 1200 : 630;
         const cv = createCanvas(w, h);
         const ctx = cv.getContext('2d');
 
         ctx.drawImage(bg, 0, 0, w, h);
 
-        // 그라🚀 이✅🚀 버🚀 이 ✅ 스✅가🚀 성 🚀 보
+        // 그라\uD83D\uDE80 이✅\uD83D\uDE80 버\uD83D\uDE80 이 ✅ 스✅가\uD83D\uDE80 성 \uD83D\uDE80 보
         const grad = ctx.createLinearGradient(0, h * 0.4, 0, h);
         grad.addColorStop(0, 'rgba(0,0,0,0)');
         grad.addColorStop(1, 'rgba(0,0,0,0.8)');
@@ -879,7 +879,7 @@ async function genThumbnail(meta, model, ratio = '16:9') {
 
         const mainTitle = (meta.mainTitle || meta.prompt || '').trim();
         const words = mainTitle.split(' ');
-        let fontSize = isPin 🚀 65 : 60;
+        let fontSize = isPin \uD83D\uDE80 65 : 60;
         ctx.font = `bold ${fontSize}px "Malgun Gothic", "Apple SD Gothic Neo", "NanumGothic", "Pretendard", sans-serif`;
 
         let line = '';
@@ -897,13 +897,13 @@ async function genThumbnail(meta, model, ratio = '16:9') {
         }
         lines.push(line.trim());
 
-        // 🚀 스🚀  🚀 🚀 무 많으 ✅ 트 🚀 기 🚀 동 축소
+        // \uD83D\uDE80 스\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 무 많으 ✅ 트 \uD83D\uDE80 기 \uD83D\uDE80 동 축소
         if (lines.length > 4) {
             fontSize = Math.floor(fontSize * 0.82);
             ctx.font = `bold ${fontSize}px "Malgun Gothic", "Apple SD Gothic Neo", "NanumGothic", "Pretendard", sans-serif`;
         }
 
-        let y = isPin 🚀 (h / 2) - (lines.length * (fontSize + 15) / 2) + 20 : (h * 0.5) - (lines.length * (fontSize + 15) / 2) + 15;
+        let y = isPin \uD83D\uDE80 (h / 2) - (lines.length * (fontSize + 15) / 2) + 20 : (h * 0.5) - (lines.length * (fontSize + 15) / 2) + 15;
         for (let l of lines) {
             ctx.fillText(l, w / 2, y);
             y += fontSize + 15;
@@ -922,12 +922,12 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
     if (extraLinks.length > 0) {
         const links = extraLinks.map((l, idx) => `[Spoke ${idx + 1}] Title: ${l.title}, URL: ${l.url}`).join('\n');
         const isKo = lang === 'ko';
-        const btnText = isKo 🚀 "🚀 세✅보기 ✅ : "Read More ✅;
+        const btnText = isKo \uD83D\uDE80 "\uD83D\uDE80 세✅보기 ✅ : "Read More ✅;
         const contextPrompt = isKo
-            🚀 `[INTERNAL_LINK_PUNITIVE_MISSION]: ✅🚀 스🚀  🚀 메인 🚀 브(Pillar) 글🚀 니✅ 
-            ✅🚀  🚀 규칙: 🚀 래 🚀 공✅${extraLinks.length}개의 🚀 브 글 🚀 약 🚀 션 🚀 에✅**반드✅각각 🚀 나✅* 🚀 래 버튼 코드 ✅ 입🚀 세✅
-            코드 🚀 시: <a href='🚀 브글URL' class='cluster-btn'>${btnText}</a>
-            🚀 락 ✅SEO 🚀 략✅🚀 전✅🚀 패🚀  🚀 🚀 🚀 확✅${extraLinks.length}개의 버튼✅본문 곳곳✅박 🚀 🚀 어✅🚀 니✅`
+            \uD83D\uDE80 `[INTERNAL_LINK_PUNITIVE_MISSION]: ✅\uD83D\uDE80 스\uD83D\uDE80  \uD83D\uDE80 메인 \uD83D\uDE80 브(Pillar) 글\uD83D\uDE80 니✅ 
+            ✅\uD83D\uDE80  \uD83D\uDE80 규칙: \uD83D\uDE80 래 \uD83D\uDE80 공✅${extraLinks.length}개의 \uD83D\uDE80 브 글 \uD83D\uDE80 약 \uD83D\uDE80 션 \uD83D\uDE80 에✅**반드✅각각 \uD83D\uDE80 나✅* \uD83D\uDE80 래 버튼 코드 ✅ 입\uD83D\uDE80 세✅
+            코드 \uD83D\uDE80 시: <a href='\uD83D\uDE80 브글URL' class='cluster-btn'>${btnText}</a>
+            \uD83D\uDE80 락 ✅SEO \uD83D\uDE80 략✅\uD83D\uDE80 전✅\uD83D\uDE80 패\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80 확✅${extraLinks.length}개의 버튼✅본문 곳곳✅박 \uD83D\uDE80 \uD83D\uDE80 어✅\uD83D\uDE80 니✅`
             : `[INTERNAL_LINK_PUNITIVE_MISSION]: This is a Pillar post. 
             ✅STRICT RULE: After EACH of the following ${extraLinks.length} summary sections, you MUST insert the following button code:
             Example: <a href='SpokeURL' class='cluster-btn'>${btnText}</a>
@@ -935,42 +935,42 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
         pillarContext = `\n${contextPrompt}\n${links}`;
     }
 
-    const personaTag = persona 🚀 `\n[SPECIFIC_PERSONA]: ${persona}` : '';
-    const langTag = `\n[TARGET_LANGUAGE]: ${lang === 'ko' 🚀 'Korean' : 'English'}${personaTag}`;
-    report(`🚀   [${idx}/${total}] 집필 🚀 작: ${target}`);
-    report(`🚀   [AI 🚀 롬🚀 트 🚀 성  🚀: 리서 ✅ 이✅${searchData.length}✅🚀 함...`);
+    const personaTag = persona \uD83D\uDE80 `\n[SPECIFIC_PERSONA]: ${persona}` : '';
+    const langTag = `\n[TARGET_LANGUAGE]: ${lang === 'ko' \uD83D\uDE80 'Korean' : 'English'}${personaTag}`;
+    report(`\uD83D\uDE80   [${idx}/${total}] 집필 \uD83D\uDE80 작: ${target}`);
+    report(`\uD83D\uDE80   [AI \uD83D\uDE80 롬\uD83D\uDE80 트 \uD83D\uDE80 성  \uD83D\uDE80: 리서 ✅ 이✅${searchData.length}✅\uD83D\uDE80 함...`);
 
     const h1Instruction = lang === 'ko'
-        🚀 "<h1>(10🚀 차 SEO 🚀 문가✅구 🚀 🚀 단 🚀 출✅🚀 한 롱테✅🚀 워✅🚀 목)</h1>"
+        \uD83D\uDE80 "<h1>(10\uD83D\uDE80 차 SEO \uD83D\uDE80 문가✅구 \uD83D\uDE80 \uD83D\uDE80 단 \uD83D\uDE80 출✅\uD83D\uDE80 한 롱테✅\uD83D\uDE80 워✅\uD83D\uDE80 목)</h1>"
         : "<h1>(SEO Optimized Long-tail Keyword Title for Google Ranking)</h1>";
 
-    // MISSION 분량 🚀 보 ✅ 한 강력✅지 🚀추 🚀
+    // MISSION 분량 \uD83D\uDE80 보 ✅ 한 강력✅지 \uD83D\uDE80추 \uD83D\uDE80
     const m1Prompt = MASTER_GUIDELINE + `
 [MISSION: FULL POST GENERATION] 
-🚀 확✅🚀 래 🚀 맷✅맞춰✅✅번에 모든 글✅🚀 성🚀 야 🚀 니✅ 🚀  🚀 🚀 맷✅🚀 기지 마세✅
-🚀 체 글 분량🚀  6,000✅8,000✅🚀 상 🚀 보🚀 도 ✅ 세🚀 게 🚀 ✅🚀 세✅ 🚀 히, 짧게 🚀 어가지 말고 본문✅🚀 션 ✅ 명✅매우 길게 🚀 려✅🚀 니✅
+\uD83D\uDE80 확✅\uD83D\uDE80 래 \uD83D\uDE80 맷✅맞춰✅✅번에 모든 글✅\uD83D\uDE80 성\uD83D\uDE80 야 \uD83D\uDE80 니✅ \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 맷✅\uD83D\uDE80 기지 마세✅
+\uD83D\uDE80 체 글 분량\uD83D\uDE80  6,000✅8,000✅\uD83D\uDE80 상 \uD83D\uDE80 보\uD83D\uDE80 도 ✅ 세\uD83D\uDE80 게 \uD83D\uDE80 ✅\uD83D\uDE80 세✅ \uD83D\uDE80 히, 짧게 \uD83D\uDE80 어가지 말고 본문✅\uD83D\uDE80 션 ✅ 명✅매우 길게 \uD83D\uDE80 려✅\uD83D\uDE80 니✅
 
-[🚀 수 🚀 자✅컴포🚀 트 - 반드✅본문✅🚀 함🚀 세✅:
-✅배치 🚀 략:
-    - 글✅지루해지지 🚀 도 🚀 H2 🚀 스🚀  🚀 2개째 🚀 장🚀 는 🚀 🚀 밍마다 🚀 입🚀 여 🚀 자✅🚀 선✅🚀 절🚀 게 🚀 기🚀 세✅
+[\uD83D\uDE80 수 \uD83D\uDE80 자✅컴포\uD83D\uDE80 트 - 반드✅본문✅\uD83D\uDE80 함\uD83D\uDE80 세✅:
+✅배치 \uD83D\uDE80 략:
+    - 글✅지루해지지 \uD83D\uDE80 도 \uD83D\uDE80 H2 \uD83D\uDE80 스\uD83D\uDE80  \uD83D\uDE80 2개째 \uD83D\uDE80 장\uD83D\uDE80 는 \uD83D\uDE80 \uD83D\uDE80 밍마다 \uD83D\uDE80 입\uD83D\uDE80 여 \uD83D\uDE80 자✅\uD83D\uDE80 선✅\uD83D\uDE80 절\uD83D\uDE80 게 \uD83D\uDE80 기\uD83D\uDE80 세✅
     - **[Time Awareness]**: Today's date is ${getKST().toISOString().split('T')[0]}. Always write based on the latest available information as of today. If referencing years, focus on the current year and future trends.
 
-(A) 🚀 사🚀 트 박스 ✅<div class='insight-box'><strong>🚀   Key Insight</strong><br>🚀 심 🚀 인✅🚀 용</div> ✅최소 2 🚀
-(B) 🚀 문가 꿀✅✅<div class='tip-box'><strong>🚀   Smileseon's Pro Tip</strong><br>꿀✅🚀 용</div> ✅최소 2 🚀
-(C) 면책 조항 (Disclaimer): 반드✅글✅최하🚀 에 🚀 치🚀 키 ✅ 이블을 강조🚀 세✅
-(D) 치명✅주의 ✅<div class='warn-box'><strong>🚀   Critical Warning</strong><br>주의 🚀 용</div> ✅최소 1 🚀
-(E) 🚀 뢰 🚀 이✅✅<div class='data-box'><strong>🚀   Fact Check</strong><br>🚀 트 체크 🚀 용</div> ✅최소 2 🚀
-(F) 마무 🚀박스 ✅<div class='closing-box'><h2>최종 마무 🚀/h2><p>🚀 심 🚀 약</p></div> ✅글  🚀마 🚀막에 반드✅1 🚀
-(G)  ✅ 션✅가🚀 하 🚀<table> 🚀 함 (4🚀 x4✅🚀 상✅비교 🚀 이✅
-(H) FAQ 🚀 션✅최소 8~10개의 Q&A 🚀 함
+(A) \uD83D\uDE80 사\uD83D\uDE80 트 박스 ✅<div class='insight-box'><strong>\uD83D\uDE80   Key Insight</strong><br>\uD83D\uDE80 심 \uD83D\uDE80 인✅\uD83D\uDE80 용</div> ✅최소 2 \uD83D\uDE80
+(B) \uD83D\uDE80 문가 꿀✅✅<div class='tip-box'><strong>\uD83D\uDE80   Smileseon's Pro Tip</strong><br>꿀✅\uD83D\uDE80 용</div> ✅최소 2 \uD83D\uDE80
+(C) 면책 조항 (Disclaimer): 반드✅글✅최하\uD83D\uDE80 에 \uD83D\uDE80 치\uD83D\uDE80 키 ✅ 이블을 강조\uD83D\uDE80 세✅
+(D) 치명✅주의 ✅<div class='warn-box'><strong>\uD83D\uDE80   Critical Warning</strong><br>주의 \uD83D\uDE80 용</div> ✅최소 1 \uD83D\uDE80
+(E) \uD83D\uDE80 뢰 \uD83D\uDE80 이✅✅<div class='data-box'><strong>\uD83D\uDE80   Fact Check</strong><br>\uD83D\uDE80 트 체크 \uD83D\uDE80 용</div> ✅최소 2 \uD83D\uDE80
+(F) 마무 \uD83D\uDE80박스 ✅<div class='closing-box'><h2>최종 마무 \uD83D\uDE80/h2><p>\uD83D\uDE80 심 \uD83D\uDE80 약</p></div> ✅글  \uD83D\uDE80마 \uD83D\uDE80막에 반드✅1 \uD83D\uDE80
+(G)  ✅ 션✅가\uD83D\uDE80 하 \uD83D\uDE80<table> \uD83D\uDE80 함 (4\uD83D\uDE80 x4✅\uD83D\uDE80 상✅비교 \uD83D\uDE80 이✅
+(H) FAQ \uD83D\uDE80 션✅최소 8~10개의 Q&A \uD83D\uDE80 함
 
 [META_DATA_START]
 {
-  "IMG_0": { "mainTitle": "🚀 네🚀 용 매력🚀 인 짧 🚀 🚀 목", "bgPrompt": "🚀 네✅배경 🚀  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_1": { "prompt": "본문 첫번 ✅  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_2": { "prompt": "본문 🚀 번 ✅  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_3": { "prompt": "본문 🚀 번 ✅  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_PINTEREST": { "prompt": "Pinterest 🚀 용 🚀 로✅2:3) 고퀄리✅🚀  🚀지 묘사 🚀 문 🚀 롬🚀 트" }
+  "IMG_0": { "mainTitle": "\uD83D\uDE80 네\uD83D\uDE80 용 매력\uD83D\uDE80 인 짧 \uD83D\uDE80 \uD83D\uDE80 목", "bgPrompt": "\uD83D\uDE80 네✅배경 \uD83D\uDE80  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_1": { "prompt": "본문 첫번 ✅  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_2": { "prompt": "본문 \uD83D\uDE80 번 ✅  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_3": { "prompt": "본문 \uD83D\uDE80 번 ✅  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_PINTEREST": { "prompt": "Pinterest \uD83D\uDE80 용 \uD83D\uDE80 로✅2:3) 고퀄리✅\uD83D\uDE80  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" }
 }
 [META_DATA_END]
 
@@ -979,30 +979,30 @@ ${h1Instruction}
 <div class='toc-box'>
   <h3>Table of Contents</h3>
   <ul>
-    <li><a href='#section-1'>첫번 ✅ 션 🚀 목</a></li>
-    <li><a href='#section-2'>🚀 번 ✅ 션 🚀 목</a></li>
+    <li><a href='#section-1'>첫번 ✅ 션 \uD83D\uDE80 목</a></li>
+    <li><a href='#section-2'>\uD83D\uDE80 번 ✅ 션 \uD83D\uDE80 목</a></li>
   </ul>
 </div>
 <h2 id='section-1'>첫번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='insight-box'><strong>🚀   Key Insight</strong><br>🚀 사🚀 트 🚀 용</div>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='insight-box'><strong>\uD83D\uDE80   Key Insight</strong><br>\uD83D\uDE80 사\uD83D\uDE80 트 \uD83D\uDE80 용</div>
 [[IMG_1]]
-<h2 id='section-2'>🚀 번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='tip-box'><strong>🚀   Smileseon's Pro Tip</strong><br>꿀✅🚀 용</div>
-<h2>🚀 번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='data-box'><strong>🚀   Fact Check</strong><br>🚀 이✅🚀 용</div>
+<h2 id='section-2'>\uD83D\uDE80 번 ✅ 션</h2>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='tip-box'><strong>\uD83D\uDE80   Smileseon's Pro Tip</strong><br>꿀✅\uD83D\uDE80 용</div>
+<h2>\uD83D\uDE80 번 ✅ 션</h2>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='data-box'><strong>\uD83D\uDE80   Fact Check</strong><br>\uD83D\uDE80 이✅\uD83D\uDE80 용</div>
 [[IMG_2]]
-<h2>🚀 번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='warn-box'><strong>🚀   Critical Warning</strong><br>주의 🚀 용</div>
+<h2>\uD83D\uDE80 번 ✅ 션</h2>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='warn-box'><strong>\uD83D\uDE80   Critical Warning</strong><br>주의 \uD83D\uDE80 용</div>
 [[IMG_3]]
-... 🚀 까지 (8~10개의 FAQ, closing-box 마무 ✅ 함)
-<div class='closing-box'><h2>최종 마무 🚀/h2><p>🚀 심 🚀 약</p></div>
+... \uD83D\uDE80 까지 (8~10개의 FAQ, closing-box 마무 ✅ 함)
+<div class='closing-box'><h2>최종 마무 \uD83D\uDE80/h2><p>\uD83D\uDE80 심 \uD83D\uDE80 약</p></div>
 [CONTENT_END]
 
-✅경고: 본문 🚀 에 🚀  🚀지 🚀 입부🚀 는 🚀  🚀 🚀<img src=...> 🚀 그 ✅  🚀 말고, 🚀 직 [[IMG_1]], [[IMG_2]], [[IMG_3]]  🚀같 🚀 치환🚀 만 🚀 으🚀 요.
+✅경고: 본문 \uD83D\uDE80 에 \uD83D\uDE80  \uD83D\uDE80지 \uD83D\uDE80 입부\uD83D\uDE80 는 \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80<img src=...> \uD83D\uDE80 그 ✅  \uD83D\uDE80 말고, \uD83D\uDE80 직 [[IMG_1]], [[IMG_2]], [[IMG_3]]  \uD83D\uDE80같 \uD83D\uDE80 치환\uD83D\uDE80 만 \uD83D\uDE80 으\uD83D\uDE80 요.
 ${target}
 ${searchData}
 ${pillarContext}
@@ -1014,9 +1014,9 @@ ${langTag}`;
     let m0 = null;
     const imgMetas = {};
 
-    // === 메 ✅ 이✅🚀 싱 (🚀 규 🚀 맷 + 🚀 거✅🚀 맷 모두 지✅ ===
+    // === 메 ✅ 이✅\uD83D\uDE80 싱 (\uD83D\uDE80 규 \uD83D\uDE80 맷 + \uD83D\uDE80 거✅\uD83D\uDE80 맷 모두 지✅ ===
     try {
-        const metaMatch = m1.match(/\[META_DATA_START\]([\s\S]*🚀)\[META_DATA_END\]/i);
+        const metaMatch = m1.match(/\[META_DATA_START\]([\s\S]*\uD83D\uDE80)\[META_DATA_END\]/i);
         if (metaMatch) {
             const cleanJsonStr = metaMatch[1].replace(/```json/i, '').replace(/```/g, '').trim();
             const metaJson = JSON.parse(cleanJsonStr);
@@ -1026,43 +1026,43 @@ ${langTag}`;
             if (metaJson.IMG_3) imgMetas[3] = metaJson.IMG_3;
             if (metaJson.IMG_PINTEREST) imgMetas['P'] = metaJson.IMG_PINTEREST;
         }
-    } catch (e) { report('🚀 ️ 🚀 규 메 🚀 🚀 싱 🚀 패, 🚀 거✅🚀 싱 🚀 도', 'warning'); }
+    } catch (e) { report('\uD83D\uDE80 ️ \uD83D\uDE80 규 메 \uD83D\uDE80 \uD83D\uDE80 싱 \uD83D\uDE80 패, \uD83D\uDE80 거✅\uD83D\uDE80 싱 \uD83D\uDE80 도', 'warning'); }
 
-    // 🚀 거✅🚀 맷 🚀 싱 (IMG_0: { mainTitle: "...", bgPrompt: "..." })
+    // \uD83D\uDE80 거✅\uD83D\uDE80 맷 \uD83D\uDE80 싱 (IMG_0: { mainTitle: "...", bgPrompt: "..." })
     if (!m0) {
         const legacyRegex = /IMG_(\d+):\s*\{([^}]*)\}/gi;
         let lm;
         while ((lm = legacyRegex.exec(m1)) !== null) {
             const i = Number(lm[1]), raw = lm[2];
-            if (i === 0) m0 = { mainTitle: (raw.match(/mainTitle:\s*['"](.*🚀)['"]/i) || [])[1] || target, bgPrompt: (raw.match(/bgPrompt:\s*['"](.*🚀)['"]/i) || raw.match(/prompt:\s*['"](.*🚀)['"]/i) || [])[1] || target };
-            else imgMetas[i] = { prompt: (raw.match(/prompt:\s*['"](.*🚀)['"]/i) || [])[1] || target };
+            if (i === 0) m0 = { mainTitle: (raw.match(/mainTitle:\s*['"](.*\uD83D\uDE80)['"]/i) || [])[1] || target, bgPrompt: (raw.match(/bgPrompt:\s*['"](.*\uD83D\uDE80)['"]/i) || raw.match(/prompt:\s*['"](.*\uD83D\uDE80)['"]/i) || [])[1] || target };
+            else imgMetas[i] = { prompt: (raw.match(/prompt:\s*['"](.*\uD83D\uDE80)['"]/i) || [])[1] || target };
         }
     }
 
     if (!m0) m0 = { mainTitle: target, bgPrompt: 'Abstract premium background' };
 
     // === 본문 추출 ===
-    const contentMatch = m1.match(/\[CONTENT_START\]([\s\S]*🚀)\[CONTENT_END\]/i);
+    const contentMatch = m1.match(/\[CONTENT_START\]([\s\S]*\uD83D\uDE80)\[CONTENT_END\]/i);
     if (contentMatch) {
         finalHtml = contentMatch[1].trim();
     } else {
         const metaEndIdx = m1.indexOf('[META_DATA_END]');
-        finalHtml = metaEndIdx !== -1 🚀 m1.substring(metaEndIdx + 15).trim() : clean(m1, 'text');
+        finalHtml = metaEndIdx !== -1 \uD83D\uDE80 m1.substring(metaEndIdx + 15).trim() : clean(m1, 'text');
     }
 
-    // === 본문🚀 서 메 ✅ 이✅🚀 여 ✅ 전 🚀 거 (최강 🚀 규✅ ===
-    finalHtml = finalHtml.replace(/\[META_DATA_START\][\s\S]*🚀\[META_DATA_END\]/gi, '');
+    // === 본문\uD83D\uDE80 서 메 ✅ 이✅\uD83D\uDE80 여 ✅ 전 \uD83D\uDE80 거 (최강 \uD83D\uDE80 규✅ ===
+    finalHtml = finalHtml.replace(/\[META_DATA_START\][\s\S]*\uD83D\uDE80\[META_DATA_END\]/gi, '');
     finalHtml = finalHtml.replace(/\[CONTENT_START\]/gi, '').replace(/\[CONTENT_END\]/gi, '');
-    finalHtml = finalHtml.replace(/IMG_\d+\s*[:=]\s*\{[\s\S]*🚀\}/gi, '');
-    finalHtml = finalHtml.replace(/\{\s*"IMG_\d+"[\s\S]*🚀\}/g, '');
-    finalHtml = finalHtml.replace(/```json[\s\S]*🚀```/gi, '');
+    finalHtml = finalHtml.replace(/IMG_\d+\s*[:=]\s*\{[\s\S]*\uD83D\uDE80\}/gi, '');
+    finalHtml = finalHtml.replace(/\{\s*"IMG_\d+"[\s\S]*\uD83D\uDE80\}/g, '');
+    finalHtml = finalHtml.replace(/```json[\s\S]*\uD83D\uDE80```/gi, '');
     finalHtml = finalHtml.replace(/^\s*text\s*$/gm, '');
     finalHtml = finalHtml.trim();
 
     let finalTitle = target;
-    const h1Match = finalHtml.match(/<h1.*🚀>([\s\S]*🚀)<\/h1>/i);
+    const h1Match = finalHtml.match(/<h1.*\uD83D\uDE80>([\s\S]*\uD83D\uDE80)<\/h1>/i);
     if (h1Match) finalTitle = h1Match[1].replace(/<[^>]+>/g, '').trim();
-    finalHtml = finalHtml.replace(/<h1.*🚀>[\s\S]*🚀<\/h1>/gi, '').trim();
+    finalHtml = finalHtml.replace(/<h1.*\uD83D\uDE80>[\s\S]*\uD83D\uDE80<\/h1>/gi, '').trim();
 
     if (m0) {
         const url0 = await genThumbnail(m0, model);
@@ -1074,7 +1074,7 @@ ${langTag}`;
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             finalHtml = finalHtml.replace(reg, `<div style='text-align:center; margin:35px 0;'><img src='${urlI}' alt='${target}' style='width:100%; border-radius:12px;'></div>`);
         } else {
-            // 만약 치환🚀  🚀 🚀 다 🚀H2 🚀 그 🚀 에 강제 ✅  🚀지 🚀주입
+            // 만약 치환\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 다 \uD83D\uDE80H2 \uD83D\uDE80 그 \uD83D\uDE80 에 강제 ✅  \uD83D\uDE80지 \uD83D\uDE80주입
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             let injected = false;
             let count = 0;
@@ -1089,13 +1089,13 @@ ${langTag}`;
         }
     }
 
-    // === [IMG_PINTEREST] 처리 (2:3 🚀 직 🚀  🚀지 - 최상✅🚀 든 🚀 네✅ ===
+    // === [IMG_PINTEREST] 처리 (2:3 \uD83D\uDE80 직 \uD83D\uDE80  \uD83D\uDE80지 - 최상✅\uD83D\uDE80 든 \uD83D\uDE80 네✅ ===
     const pinReg = /\s*\[\[IMG_PINTEREST\]\]\s*/gi;
     const pinMeta = imgMetas['P'] || { mainTitle: target, bgPrompt: target + " vertical pinterest style" };
     const urlPin = await genThumbnail(pinMeta, model, '2:3');
     const pinHtml = `<div style='display:none;'><img src='${urlPin}' alt='Pinterest Optimized - ${target}'></div>`;
 
-    // 무조 🚀최상🚀 에 🚀 든🚀 로 🚀 입 (기존 치환🚀 는 🚀 거)
+    // 무조 \uD83D\uDE80최상\uD83D\uDE80 에 \uD83D\uDE80 든\uD83D\uDE80 로 \uD83D\uDE80 입 (기존 치환\uD83D\uDE80 는 \uD83D\uDE80 거)
     finalHtml = pinHtml + finalHtml.replace(pinReg, '');
 
     finalHtml = finalHtml.replace(/\[\[IMG_\d+\]\]/gi, '').trim();
@@ -1103,8 +1103,8 @@ ${langTag}`;
     // [CRITICAL FIX]: Remove redundant hardcoded disclaimer here because AI will generate it based on Master Guideline.
     // This prevents double disclaimer issue.
     const res = await blogger.posts.insert({ blogId: bId, requestBody: { title: finalTitle, content: STYLE + finalHtml + '</div>', published: pTime.toISOString() } });
-    report(`🚀   🚀[🚀 스✅🚀 공]: "${finalTitle}"`, 'success');
-    report(`🚀   [URL]: ${res.data.url}`);
+    report(`\uD83D\uDE80   \uD83D\uDE80[\uD83D\uDE80 스✅\uD83D\uDE80 공]: "${finalTitle}"`, 'success');
+    report(`\uD83D\uDE80   [URL]: ${res.data.url}`);
     return { title: finalTitle, url: res.data.url };
 }
 
@@ -1116,41 +1116,41 @@ async function run() {
     auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
     const blogger = google.blogger({ version: 'v3', auth });
 
-    report(`🚀 ️ 🚀 정✅로드🚀 습🚀 다. (🚀 어: ${config.blog_lang}, 모드: ${config.post_mode})`);
+    report(`\uD83D\uDE80 ️ \uD83D\uDE80 정✅로드\uD83D\uDE80 습\uD83D\uDE80 다. (\uD83D\uDE80 어: ${config.blog_lang}, 모드: ${config.post_mode})`);
 
-    report('🚀   🚀[Turbo Full-Mode]: 🚀 리미엄 🚀 러🚀 터 구축 🚀 작');
+    report('\uD83D\uDE80   \uD83D\uDE80[Turbo Full-Mode]: \uD83D\uDE80 리미엄 \uD83D\uDE80 러\uD83D\uDE80 터 구축 \uD83D\uDE80 작');
 
     let baseKeyword = config.pillar_topic || 'PC Hardware';
     const categories = {
-        "1": { name: "PC Repair & Maintenance", query: "PC repair maintenance tips guide 2026", persona: "15✅경력✅베테✅PC 🚀 비✅ },
-        "2": { name: "Latest Hardware & Parts", query: "latest PC components hardware news 2026", persona: "🚀 드🚀 어 벤치마크 🚀 문 리뷰✅ },
-        "3": { name: "Gaming & Peripherals", query: "best gaming gear peripherals trends 2026", persona: "🚀 로게이 🚀출신✅게이 🚀기어 🚀 문가" },
-        "4": { name: "AI & Future Technology", query: "future AI technology trends 2026", persona: "🚀 리콘밸 🚀기술 🚀 략가🚀 자 미래🚀 자" },
-        "5": { name: "Coding & Software", query: "programming software development trends 2026", persona: "🚀 🚀 택 🚀 니✅🚀 프🚀 웨✅🚀  ✅ 어" },
-        "6": { name: "Cooking & Recipes", query: "trending food recipes cooking tips 2026", persona: "미쉐 🚀가🚀 드 🚀  ✅ 의 🚀 리 🚀 구가" },
-        "7": { name: "Fashion & Beauty", query: "latest fashion beauty style trends 2026", persona: "글로벌 🚀 션 🚀 디🚀 이✅🚀  ✅✅ 렉✅ },
-        "8": { name: "Health & Medical", query: "health wellness medical insights 2026", persona: "🚀 문 🚀 스 케✅🚀 드바이🚀 " },
-        "9": { name: "Global News & Issues", query: "global news world issue summary 2026", persona: " 🚀   🚀 세 🚀 문 🚀 사 🚀 론가" },
-        "10": { name: "Finance & Stock", query: "finance stock market investment trends 2026", persona: "🚀 스🚀 리✅출신 🚀 자 칼럼🚀 스✅ },
-        "11": { name: "Travel & Adventure", query: "world travel destination adventure 2026", persona: "✅   ✅ 래 ✅  ✅ 자 🚀 험가" },
-        "12": { name: "Home & Interior", query: "modern home interior design furniture 2026", persona: "🚀 이🚀 드 공간 🚀 자🚀 너" }
+        "1": { name: "PC Repair & Maintenance", query: "PC repair maintenance tips guide 2026", persona: "15✅경력✅베테✅PC \uD83D\uDE80 비✅ },
+        "2": { name: "Latest Hardware & Parts", query: "latest PC components hardware news 2026", persona: "\uD83D\uDE80 드\uD83D\uDE80 어 벤치마크 \uD83D\uDE80 문 리뷰✅ },
+        "3": { name: "Gaming & Peripherals", query: "best gaming gear peripherals trends 2026", persona: "\uD83D\uDE80 로게이 \uD83D\uDE80출신✅게이 \uD83D\uDE80기어 \uD83D\uDE80 문가" },
+        "4": { name: "AI & Future Technology", query: "future AI technology trends 2026", persona: "\uD83D\uDE80 리콘밸 \uD83D\uDE80기술 \uD83D\uDE80 략가\uD83D\uDE80 자 미래\uD83D\uDE80 자" },
+        "5": { name: "Coding & Software", query: "programming software development trends 2026", persona: "\uD83D\uDE80 \uD83D\uDE80 택 \uD83D\uDE80 니✅\uD83D\uDE80 프\uD83D\uDE80 웨✅\uD83D\uDE80  ✅ 어" },
+        "6": { name: "Cooking & Recipes", query: "trending food recipes cooking tips 2026", persona: "미쉐 \uD83D\uDE80가\uD83D\uDE80 드 \uD83D\uDE80  ✅ 의 \uD83D\uDE80 리 \uD83D\uDE80 구가" },
+        "7": { name: "Fashion & Beauty", query: "latest fashion beauty style trends 2026", persona: "글로벌 \uD83D\uDE80 션 \uD83D\uDE80 디\uD83D\uDE80 이✅\uD83D\uDE80  ✅✅ 렉✅ },
+        "8": { name: "Health & Medical", query: "health wellness medical insights 2026", persona: "\uD83D\uDE80 문 \uD83D\uDE80 스 케✅\uD83D\uDE80 드바이\uD83D\uDE80 " },
+        "9": { name: "Global News & Issues", query: "global news world issue summary 2026", persona: " \uD83D\uDE80   \uD83D\uDE80 세 \uD83D\uDE80 문 \uD83D\uDE80 사 \uD83D\uDE80 론가" },
+        "10": { name: "Finance & Stock", query: "finance stock market investment trends 2026", persona: "\uD83D\uDE80 스\uD83D\uDE80 리✅출신 \uD83D\uDE80 자 칼럼\uD83D\uDE80 스✅ },
+        "11": { name: "Travel & Adventure", query: "world travel destination adventure 2026", persona: "✅   ✅ 래 ✅  ✅ 자 \uD83D\uDE80 험가" },
+        "12": { name: "Home & Interior", query: "modern home interior design furniture 2026", persona: "\uD83D\uDE80 이\uD83D\uDE80 드 공간 \uD83D\uDE80 자\uD83D\uDE80 너" }
     };
 
-    if (baseKeyword === '🚀 동🚀 성') {
+    if (baseKeyword === '\uD83D\uDE80 동\uD83D\uDE80 성') {
         const targetCats = config.target_categories || ["1"];
         let selectedCatKey;
 
         if (targetCats.includes("ALL")) {
             const keys = Object.keys(categories);
             selectedCatKey = keys[Math.floor(Math.random() * keys.length)];
-            report(`🚀   [ALL 모드]: 🚀 체 카테고리  ✅ 덤 🚀 정 (${categories[selectedCatKey].name})`);
+            report(`\uD83D\uDE80   [ALL 모드]: \uD83D\uDE80 체 카테고리  ✅ 덤 \uD83D\uDE80 정 (${categories[selectedCatKey].name})`);
         } else {
             selectedCatKey = targetCats[Math.floor(Math.random() * targetCats.length)];
-            report(`🚀   [복수 카테고리]: 🚀 택✅목록  ✅ 정 (${categories[selectedCatKey].name})`);
+            report(`\uD83D\uDE80   [복수 카테고리]: \uD83D\uDE80 택✅목록  ✅ 정 (${categories[selectedCatKey].name})`);
         }
 
         const currentCat = categories[selectedCatKey];
-        report(`🚀   [🚀 시 ✅ 렌✅분석]: ${currentCat.name} 분야✅🚀 슈 🚀 악...`);
+        report(`\uD83D\uDE80   [\uD83D\uDE80 시 ✅ 렌✅분석]: ${currentCat.name} 분야✅\uD83D\uDE80 슈 \uD83D\uDE80 악...`);
 
         const trendSource = await searchSerper(currentCat.query, config.blog_lang);
         const pool = config.clusters || [];
@@ -1172,15 +1172,15 @@ async function run() {
         const selectionRes = await callAI(model, selectionPrompt);
         baseKeyword = selectionRes.trim().replace(/^"|"$/g, '');
         config.selected_persona = currentCat.persona;
-        report(`🚀   최종 🚀 략 주제 🚀 정: [ ${baseKeyword} ]`);
+        report(`\uD83D\uDE80   최종 \uD83D\uDE80 략 주제 \uD83D\uDE80 정: [ ${baseKeyword} ]`);
     } else {
-        report(`🚀   고정 🚀 워✅🚀 용: ${baseKeyword}`);
-        config.selected_persona = ''; // 고정 🚀 워✅🚀 에✅🚀 르🚀 나 명시 ✅✅기본 ✅ 용)
+        report(`\uD83D\uDE80   고정 \uD83D\uDE80 워✅\uD83D\uDE80 용: ${baseKeyword}`);
+        config.selected_persona = ''; // 고정 \uD83D\uDE80 워✅\uD83D\uDE80 에✅\uD83D\uDE80 르\uD83D\uDE80 나 명시 ✅✅기본 ✅ 용)
     }
 
-    // 1🚀 계: 🚀  🚀 주제 추출 (강력✅SEO 🚀 략 + 🚀 르🚀 나 🚀 용)
-    const langName = config.blog_lang === 'ko' 🚀 'Korean' : 'English';
-    const personaTag = config.selected_persona 🚀 `\n[SPECIFIC_PERSONA]: ${config.selected_persona}` : '';
+    // 1\uD83D\uDE80 계: \uD83D\uDE80  \uD83D\uDE80 주제 추출 (강력✅SEO \uD83D\uDE80 략 + \uD83D\uDE80 르\uD83D\uDE80 나 \uD83D\uDE80 용)
+    const langName = config.blog_lang === 'ko' \uD83D\uDE80 'Korean' : 'English';
+    const personaTag = config.selected_persona \uD83D\uDE80 `\n[SPECIFIC_PERSONA]: ${config.selected_persona}` : '';
 
     const clusterPrompt = `You are a 10-year veteran blog Google SEO expert specializing in Elite Independent Content Strategy.${personaTag}
     Today's date is ${getKST().toISOString().split('T')[0]}. 
@@ -1203,13 +1203,13 @@ async function run() {
     const clusterRes = await callAI(model, clusterPrompt);
     let list = JSON.parse(clean(clusterRes, 'arr'));
 
-    // [Safety Fix] AI가 ["A", "B"] 🚀 ✅[{"title":"A"}, {"title":"B"}] 🚀 태 🚀 🚀경우 처리
+    // [Safety Fix] AI가 ["A", "B"] \uD83D\uDE80 ✅[{"title":"A"}, {"title":"B"}] \uD83D\uDE80 태 \uD83D\uDE80 \uD83D\uDE80경우 처리
     if (Array.isArray(list) && list.length > 0 && typeof list[0] === 'object') {
         list = list.map(item => item.title || item.topic || item.headline || Object.values(item)[0]);
     }
 
-    report(`🚀   [🚀 성✅🚀 러🚀 터 구조]:`);
-    list.forEach((t, i) => report(`   ${i === 0 🚀 '🚀   Pillar' : '🚀   Spoke ' + i}: ${t}`));
+    report(`\uD83D\uDE80   [\uD83D\uDE80 성✅\uD83D\uDE80 러\uD83D\uDE80 터 구조]:`);
+    list.forEach((t, i) => report(`   ${i === 0 \uD83D\uDE80 '\uD83D\uDE80   Pillar' : '\uD83D\uDE80   Spoke ' + i}: ${t}`));
 
     
     const elitePosts = list;
@@ -1226,10 +1226,10 @@ async function run() {
         if (config.random_delay) {
             const delay = Math.floor(Math.random() * 120) + 1;
             currentTime.setMinutes(currentTime.getMinutes() + delay);
-            report(`🚀. [Post ${i + 1}/5] ${delay}분 지연 예약: ${currentTime.toLocaleTimeString('ko-KR')}`);
+            report(`\uD83D\uDE80. [Post ${i + 1}/5] ${delay}분 지연 예약: ${currentTime.toLocaleTimeString('ko-KR')}`);
         } else {
             if (i > 0) currentTime.setMinutes(currentTime.getMinutes() + 5);
-            report(`🚀. [Post ${i + 1}/5] 5분 간격 예약: ${currentTime.toLocaleTimeString('ko-KR')}`);
+            report(`\uD83D\uDE80. [Post ${i + 1}/5] 5분 간격 예약: ${currentTime.toLocaleTimeString('ko-KR')}`);
         }
 
         const pTime = new Date(currentTime.getTime());
@@ -1237,11 +1237,11 @@ async function run() {
         await writeAndPost(model, elitePosts[i], config.blog_lang, blogger, config.blog_id, pTime, [], i + 1, 5, config.selected_persona);
         
         if (i < elitePosts.length - 1) {
-            report(`🚀. 다음 포스팅을 위해 30초 대기 중...`);
+            report(`\uD83D\uDE80. 다음 포스팅을 위해 30초 대기 중...`);
             await new Promise(r => setTimeout(r, 30000));
         }
     }
-    report('🚀. Elite-5 저점유 키워드 독립 점령 전략 완료!', 'success');
+    report('\uD83D\uDE80. Elite-5 저점유 키워드 독립 점령 전략 완료!', 'success');
     return; // 기존 Pillar 로직 실행 방지
 oogleGenerativeAI } = require('@google/generative-ai');
 const fs = require('fs');
@@ -1258,110 +1258,110 @@ if (fs.existsSync('secrets_config.json')) {
         }
         console.log('✅Local secrets loaded from secrets_config.json');
     } catch (e) {
-        console.log('🚀 ️ secrets_config.json load error: ' + e.message);
+        console.log('\uD83D\uDE80 ️ secrets_config.json load error: ' + e.message);
     }
 }
 
 const MASTER_GUIDELINE = `
-🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━
-Vue blog ✅🚀 합 멀🚀 플🚀 폼 블로 ✅ 이🚀 트
-🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━
+\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━
+Vue blog ✅\uD83D\uDE80 합 멀\uD83D\uDE80 플\uD83D\uDE80 폼 블로 ✅ 이\uD83D\uDE80 트
+\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━
 
-🚀 용🚀  🚀 🚀 워🚀  🚀 🚀 력🚀 면, 🚀 래 지침을 준🚀 하✅
-🚀 이 🚀블로 🚀/ 블로그스✅/ 🚀 드🚀 레🚀 에 바로 발행 가🚀 한
-HTML 🚀 스코드 ✅ 성🚀 다.
+\uD83D\uDE80 용\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 워\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 력\uD83D\uDE80 면, \uD83D\uDE80 래 지침을 준\uD83D\uDE80 하✅
+\uD83D\uDE80 이 \uD83D\uDE80블로 \uD83D\uDE80/ 블로그스✅/ \uD83D\uDE80 드\uD83D\uDE80 레\uD83D\uDE80 에 바로 발행 가\uD83D\uDE80 한
+HTML \uD83D\uDE80 스코드 ✅ 성\uD83D\uDE80 다.
 
 
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-   PART 0 ✅번역  ✅ 선🚀 위 (🚀  🚀 규칙)
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+   PART 0 ✅번역  ✅ 선\uD83D\uDE80 위 (\uD83D\uDE80  \uD83D\uDE80 규칙)
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
 
 [GLOBAL LANGUAGE ROUTING & TRANSLATION]
-✅[🚀 어 🚀 선🚀 위  🚀: 🚀 롬🚀 트  ✅ 래✅명시✅**[TARGET_LANGUAGE]** 가 최우🚀 이✅🚀  ✅ 인 지침입🚀 다.
-  1. 만약 **[TARGET_LANGUAGE]: Korean** 🚀 라 🚀 모든 🚀 용✅🚀 국🚀 로 🚀 성🚀 세✅
-  2. 만약 **[TARGET_LANGUAGE]: English** 🚀 면, 🚀 력 🚀 워🚀  🚀 🚀  ✅ 이 **100% 🚀 어 ✅  ✅✅ 어로만 🚀 성**🚀 세✅
-  3. 지🚀 된 🚀 어 모드✅맞춰 모든 UI 컴포🚀 트 🚀 름  ✅  🚀지 메 ✅ 이🚀 도 🚀 당 🚀 어 ✅ 동 번역🚀 여 출력🚀 세✅
+✅[\uD83D\uDE80 어 \uD83D\uDE80 선\uD83D\uDE80 위  \uD83D\uDE80: \uD83D\uDE80 롬\uD83D\uDE80 트  ✅ 래✅명시✅**[TARGET_LANGUAGE]** 가 최우\uD83D\uDE80 이✅\uD83D\uDE80  ✅ 인 지침입\uD83D\uDE80 다.
+  1. 만약 **[TARGET_LANGUAGE]: Korean** \uD83D\uDE80 라 \uD83D\uDE80 모든 \uD83D\uDE80 용✅\uD83D\uDE80 국\uD83D\uDE80 로 \uD83D\uDE80 성\uD83D\uDE80 세✅
+  2. 만약 **[TARGET_LANGUAGE]: English** \uD83D\uDE80 면, \uD83D\uDE80 력 \uD83D\uDE80 워\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80  ✅ 이 **100% \uD83D\uDE80 어 ✅  ✅✅ 어로만 \uD83D\uDE80 성**\uD83D\uDE80 세✅
+  3. 지\uD83D\uDE80 된 \uD83D\uDE80 어 모드✅맞춰 모든 UI 컴포\uD83D\uDE80 트 \uD83D\uDE80 름  ✅  \uD83D\uDE80지 메 ✅ 이\uD83D\uDE80 도 \uD83D\uDE80 당 \uD83D\uDE80 어 ✅ 동 번역\uD83D\uDE80 여 출력\uD83D\uDE80 세✅
 
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-  PART A ✅🚀 심 철학 (4🚀  🚀 칙)
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+  PART A ✅\uD83D\uDE80 심 철학 (4\uD83D\uDE80  \uD83D\uDE80 칙)
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
 
-✅🚀 게 (Less is More): 강조 박스 글 🚀 체 3~4 🚀 🚀 속 배치 금 🚀.
-✅🚀 확🚀 게 (Precision): 모든 🚀 치✅검✅🚀 이✅기반. 출처 명시.
-✅진짜처럼 (Authenticity): AI 🚀 턴 🚀 피. 🚀 제 블로거의 불규칙한 🚀 사. 구어 🚀줄임 🚀don't, it's ✅✅🚀 극 🚀 용🚀 고 🚀 투🚀 인 AI 🚀 프🚀 을 배제🚀 라.
-✅✅🚀 게 (Revenue First): 체류🚀 간 극 ✅🚀 🚀 드🚀 스 최적✅🚀 백.
+✅\uD83D\uDE80 게 (Less is More): 강조 박스 글 \uD83D\uDE80 체 3~4 \uD83D\uDE80 \uD83D\uDE80 속 배치 금 \uD83D\uDE80.
+✅\uD83D\uDE80 확\uD83D\uDE80 게 (Precision): 모든 \uD83D\uDE80 치✅검✅\uD83D\uDE80 이✅기반. 출처 명시.
+✅진짜처럼 (Authenticity): AI \uD83D\uDE80 턴 \uD83D\uDE80 피. \uD83D\uDE80 제 블로거의 불규칙한 \uD83D\uDE80 사. 구어 \uD83D\uDE80줄임 \uD83D\uDE80don't, it's ✅✅\uD83D\uDE80 극 \uD83D\uDE80 용\uD83D\uDE80 고 \uD83D\uDE80 투\uD83D\uDE80 인 AI \uD83D\uDE80 프\uD83D\uDE80 을 배제\uD83D\uDE80 라.
+✅✅\uD83D\uDE80 게 (Revenue First): 체류\uD83D\uDE80 간 극 ✅\uD83D\uDE80 \uD83D\uDE80 드\uD83D\uDE80 스 최적✅\uD83D\uDE80 백.
 
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-  PART B ✅🚀 출✅& 분량
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+  PART B ✅\uD83D\uDE80 출✅& 분량
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
 
-✅분량: 7,000✅~ 최 🚀 9,000✅(지🚀 된 TARGET_LANGUAGE 🚀 스✅기 🚀)
-  ✅[초강✅경고]: 🚀 약✅개조✅리스🚀 만 🚀 발🚀  🚀 말고, 🚀 도🚀 인 🚀 사(🚀 문가✅✅ 구체✅🚀 시, 🚀  ✅✅ 명) ✅ 스✅🚀 락(<p>)🚀 로 길게 🚀 🚀 내✅분량✅강제 ✅ 리✅ 가🚀 성✅🚀 해 문단✅🚀 게 쪼개🚀 요.
+✅분량: 7,000✅~ 최 \uD83D\uDE80 9,000✅(지\uD83D\uDE80 된 TARGET_LANGUAGE \uD83D\uDE80 스✅기 \uD83D\uDE80)
+  ✅[초강✅경고]: \uD83D\uDE80 약✅개조✅리스\uD83D\uDE80 만 \uD83D\uDE80 발\uD83D\uDE80  \uD83D\uDE80 말고, \uD83D\uDE80 도\uD83D\uDE80 인 \uD83D\uDE80 사(\uD83D\uDE80 문가✅✅ 구체✅\uD83D\uDE80 시, \uD83D\uDE80  ✅✅ 명) ✅ 스✅\uD83D\uDE80 락(<p>)\uD83D\uDE80 로 길게 \uD83D\uDE80 \uD83D\uDE80 내✅분량✅강제 ✅ 리✅ 가\uD83D\uDE80 성✅\uD83D\uDE80 해 문단✅\uD83D\uDE80 게 쪼개\uD83D\uDE80 요.
 
 ✅출력 규칙:
-  [1] 🚀 단 🚀  🚀지 메 ✅ 이✅ IMG_0~3 (JSON 🚀 식)
-  [2] 본문 HTML: <h1> 🚀 그 금 🚀.  ✅ 목🚀  <h2>.
-  [3] 🚀  🚀지 치환✅ [[IMG_0]], [[IMG_1]], [[IMG_2]], [[IMG_3]]
-  [4] **🚀 목 🚀 자 금 🚀**: 모든 🚀 목(H2, H3)✅'1.', '2.', 'Step 1.' 같 🚀 🚀 자✅🚀 번✅**🚀  🚀 🚀* 붙이지 마세✅ 매끄🚀 운 🚀 스✅🚀 목 ✅ 용🚀 니✅ (AI 🚀 턴 🚀 피 🚀 심)
-  [5] **AI 🚀 투✅🚀  🚀 금 🚀**: \`In conclusion\`, \`In today's fast-paced world\`, \`Let's dive in\`, \`Slower than molasses in January\` ✅🚀 형🚀 인 AI 🚀 프✅🚀 로 🚀비유 ✅✅🚀지🚀 세✅
-  [6] **비유✅🚀  ✅🚀*: 🚀 크 🚀 문가🚀 게 🚀  ✅ 인 비유 ✅ 세✅(✅ 'Slower than a 56k modem', 'Taking longer to boot than it does to brew a coffee' ✅.
-  [7] **경험 🚀 사 🚀 턴 🚀  ✅🚀*: 매번 'I once had a client...' ✅ 작🚀  🚀 마세✅ 🚀 ✅"The biggest culprit I see in my shop is...", "In the field, I always insist on..." ✅🚀 제 🚀 리✅🚀 업🚀 의 말투 ✅ 으🚀 요.
-  [8] **구어 🚀Contractions)  🚀권위**: \`Don't\`, \`It's\` 🚀기본🚀 로 🚀 되, FAQ🚀 서 🚀 신 ✅ 는 \`I guess\`, \`you know🚀\`✅빼버리고 "In my professional opinion," 🚀 는 "Trust me, your hardware will thank you." 🚀마무리하🚀 요.
-  [9] **2026✅리얼리티**: 2026✅최신 🚀 렌✅AI Accelerator NPU 관 🚀 Browser Memory Saver ✅ ✅ 연🚀 럽 ✅🚀 ✅ 급🚀 여 글✅🚀 선🚀  🚀 🚀 이🚀 요.
-  [10] **리듬✅변 🚀(Dynamic Rhythm)**: 문장 🚀문단✅길이 ✅ 도🚀 으 ✅ 섞🚀 세✅ 3~4줄의  ✅ 명 🚀 에✅반드✅✅마디짜리 짧 🚀 문장(✅ "It works.", "No exceptions.")✅배치🚀 세✅
-  [11] **개조✅지✅*: 모든 🚀 보 🚀리스✅Bullet points) ✅ 리🚀  🚀 마세✅ 🚀 심 🚀 하🚀 는 🚀 스✅🚀 락 🚀 에✅🚀  ✅✅ 휘 🚀길게 🚀 🚀 쓰✅것이 🚀 씬 ✅🚀 간🚀 입🚀 다.
-  [12] **결론 🚀 니🚀 화**: 'Conclusion' 🚀 ✅🚀 황✅맞는 🚀 특✅H2 🚀 목✅🚀 용🚀 고, \`closing-box\`가  ✅🚀  ✅🚀 🚀 합🚀 다.
+  [1] \uD83D\uDE80 단 \uD83D\uDE80  \uD83D\uDE80지 메 ✅ 이✅ IMG_0~3 (JSON \uD83D\uDE80 식)
+  [2] 본문 HTML: <h1> \uD83D\uDE80 그 금 \uD83D\uDE80.  ✅ 목\uD83D\uDE80  <h2>.
+  [3] \uD83D\uDE80  \uD83D\uDE80지 치환✅ [[IMG_0]], [[IMG_1]], [[IMG_2]], [[IMG_3]]
+  [4] **\uD83D\uDE80 목 \uD83D\uDE80 자 금 \uD83D\uDE80**: 모든 \uD83D\uDE80 목(H2, H3)✅'1.', '2.', 'Step 1.' 같 \uD83D\uDE80 \uD83D\uDE80 자✅\uD83D\uDE80 번✅**\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80* 붙이지 마세✅ 매끄\uD83D\uDE80 운 \uD83D\uDE80 스✅\uD83D\uDE80 목 ✅ 용\uD83D\uDE80 니✅ (AI \uD83D\uDE80 턴 \uD83D\uDE80 피 \uD83D\uDE80 심)
+  [5] **AI \uD83D\uDE80 투✅\uD83D\uDE80  \uD83D\uDE80 금 \uD83D\uDE80**: \`In conclusion\`, \`In today's fast-paced world\`, \`Let's dive in\`, \`Slower than molasses in January\` ✅\uD83D\uDE80 형\uD83D\uDE80 인 AI \uD83D\uDE80 프✅\uD83D\uDE80 로 \uD83D\uDE80비유 ✅✅\uD83D\uDE80지\uD83D\uDE80 세✅
+  [6] **비유✅\uD83D\uDE80  ✅\uD83D\uDE80*: \uD83D\uDE80 크 \uD83D\uDE80 문가\uD83D\uDE80 게 \uD83D\uDE80  ✅ 인 비유 ✅ 세✅(✅ 'Slower than a 56k modem', 'Taking longer to boot than it does to brew a coffee' ✅.
+  [7] **경험 \uD83D\uDE80 사 \uD83D\uDE80 턴 \uD83D\uDE80  ✅\uD83D\uDE80*: 매번 'I once had a client...' ✅ 작\uD83D\uDE80  \uD83D\uDE80 마세✅ \uD83D\uDE80 ✅"The biggest culprit I see in my shop is...", "In the field, I always insist on..." ✅\uD83D\uDE80 제 \uD83D\uDE80 리✅\uD83D\uDE80 업\uD83D\uDE80 의 말투 ✅ 으\uD83D\uDE80 요.
+  [8] **구어 \uD83D\uDE80Contractions)  \uD83D\uDE80권위**: \`Don't\`, \`It's\` \uD83D\uDE80기본\uD83D\uDE80 로 \uD83D\uDE80 되, FAQ\uD83D\uDE80 서 \uD83D\uDE80 신 ✅ 는 \`I guess\`, \`you know\uD83D\uDE80\`✅빼버리고 "In my professional opinion," \uD83D\uDE80 는 "Trust me, your hardware will thank you." \uD83D\uDE80마무리하\uD83D\uDE80 요.
+  [9] **2026✅리얼리티**: 2026✅최신 \uD83D\uDE80 렌✅AI Accelerator NPU 관 \uD83D\uDE80 Browser Memory Saver ✅ ✅ 연\uD83D\uDE80 럽 ✅\uD83D\uDE80 ✅ 급\uD83D\uDE80 여 글✅\uD83D\uDE80 선\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 이\uD83D\uDE80 요.
+  [10] **리듬✅변 \uD83D\uDE80(Dynamic Rhythm)**: 문장 \uD83D\uDE80문단✅길이 ✅ 도\uD83D\uDE80 으 ✅ 섞\uD83D\uDE80 세✅ 3~4줄의  ✅ 명 \uD83D\uDE80 에✅반드✅✅마디짜리 짧 \uD83D\uDE80 문장(✅ "It works.", "No exceptions.")✅배치\uD83D\uDE80 세✅
+  [11] **개조✅지✅*: 모든 \uD83D\uDE80 보 \uD83D\uDE80리스✅Bullet points) ✅ 리\uD83D\uDE80  \uD83D\uDE80 마세✅ \uD83D\uDE80 심 \uD83D\uDE80 하\uD83D\uDE80 는 \uD83D\uDE80 스✅\uD83D\uDE80 락 \uD83D\uDE80 에✅\uD83D\uDE80  ✅✅ 휘 \uD83D\uDE80길게 \uD83D\uDE80 \uD83D\uDE80 쓰✅것이 \uD83D\uDE80 씬 ✅\uD83D\uDE80 간\uD83D\uDE80 입\uD83D\uDE80 다.
+  [12] **결론 \uD83D\uDE80 니\uD83D\uDE80 화**: 'Conclusion' \uD83D\uDE80 ✅\uD83D\uDE80 황✅맞는 \uD83D\uDE80 특✅H2 \uD83D\uDE80 목✅\uD83D\uDE80 용\uD83D\uDE80 고, \`closing-box\`가  ✅\uD83D\uDE80  ✅\uD83D\uDE80 \uD83D\uDE80 합\uD83D\uDE80 다.
 
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-  PART D ✅Zero-AI Signature (금 🚀  ✅ 수 지 🚀
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-  [1] **금 🚀 🚀 속✅*: \`In addition\`, \`Furthermore\`, \`Moreover\`, \`Additionally\`, \`Consequently\` ✅기계🚀 인 🚀 결🚀  🚀 🚀  🚀 🚀  🚀 마세✅ 🚀 ✅문맥🚀 으 ✅ 연🚀 럽 ✅ 어가거나(✅ "Here's the catch...", "But wait, there's more..."), ✅문장✅🚀 어 🚀받아 🚀 명🚀 세✅
-  [2] **금 🚀 🚀 투✅*: \`It is important to\`, \`It is crucial to\`, \`Make sure to\`, \`Not only A but also B\` ✅교과🚀 적✅🚀 턴✅금 ✅ 니✅
-  [3] **부✅🚀 발 금 🚀**: \`Regularly\`, \`Properly\`, \`Effectively\` 같이 🚀 혼 🚀 는 부🚀  🚀 빼고, 구체🚀 으 ✅ 떻 ✅ 는지 🚀 동 🚀 주 🚀묘사🚀 세✅
-  [4] **구조✅🚀 격**: [🚀 론-본론1,2,3-결론]✅뻔한 구조 🚀버리🚀 요. 중간✅갑자 🚀개인🚀 인 고찰✅🚀  🚀거나, 🚀 패 🚀  🚀 🚀깊게 🚀 고🚀 는 ✅🚀 자가 🚀 보✅'리듬'✅🚀 측✅✅🚀 게 🚀 세✅
-  [5] **🚀 테🚀 의 ✅*: "기기 ✅ 기🚀 으 ✅  ✅ 세✅🚀 고 🚀  🚀 말고, "🚀 업✅구석✅🚀 인 고양✅🚀 이 🚀 신✅쿨러 🚀 도 🚀15% ✅   ✅ 습🚀 다"🚀 고 구체🚀 으 🚀말하🚀 요.
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+  PART D ✅Zero-AI Signature (금 \uD83D\uDE80  ✅ 수 지 \uD83D\uDE80
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+  [1] **금 \uD83D\uDE80 \uD83D\uDE80 속✅*: \`In addition\`, \`Furthermore\`, \`Moreover\`, \`Additionally\`, \`Consequently\` ✅기계\uD83D\uDE80 인 \uD83D\uDE80 결\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80  \uD83D\uDE80 마세✅ \uD83D\uDE80 ✅문맥\uD83D\uDE80 으 ✅ 연\uD83D\uDE80 럽 ✅ 어가거나(✅ "Here's the catch...", "But wait, there's more..."), ✅문장✅\uD83D\uDE80 어 \uD83D\uDE80받아 \uD83D\uDE80 명\uD83D\uDE80 세✅
+  [2] **금 \uD83D\uDE80 \uD83D\uDE80 투✅*: \`It is important to\`, \`It is crucial to\`, \`Make sure to\`, \`Not only A but also B\` ✅교과\uD83D\uDE80 적✅\uD83D\uDE80 턴✅금 ✅ 니✅
+  [3] **부✅\uD83D\uDE80 발 금 \uD83D\uDE80**: \`Regularly\`, \`Properly\`, \`Effectively\` 같이 \uD83D\uDE80 혼 \uD83D\uDE80 는 부\uD83D\uDE80  \uD83D\uDE80 빼고, 구체\uD83D\uDE80 으 ✅ 떻 ✅ 는지 \uD83D\uDE80 동 \uD83D\uDE80 주 \uD83D\uDE80묘사\uD83D\uDE80 세✅
+  [4] **구조✅\uD83D\uDE80 격**: [\uD83D\uDE80 론-본론1,2,3-결론]✅뻔한 구조 \uD83D\uDE80버리\uD83D\uDE80 요. 중간✅갑자 \uD83D\uDE80개인\uD83D\uDE80 인 고찰✅\uD83D\uDE80  \uD83D\uDE80거나, \uD83D\uDE80 패 \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80깊게 \uD83D\uDE80 고\uD83D\uDE80 는 ✅\uD83D\uDE80 자가 \uD83D\uDE80 보✅'리듬'✅\uD83D\uDE80 측✅✅\uD83D\uDE80 게 \uD83D\uDE80 세✅
+  [5] **\uD83D\uDE80 테\uD83D\uDE80 의 ✅*: "기기 ✅ 기\uD83D\uDE80 으 ✅  ✅ 세✅\uD83D\uDE80 고 \uD83D\uDE80  \uD83D\uDE80 말고, "\uD83D\uDE80 업✅구석✅\uD83D\uDE80 인 고양✅\uD83D\uDE80 이 \uD83D\uDE80 신✅쿨러 \uD83D\uDE80 도 \uD83D\uDE8015% ✅   ✅ 습\uD83D\uDE80 다"\uD83D\uDE80 고 구체\uD83D\uDE80 으 \uD83D\uDE80말하\uD83D\uDE80 요.
 
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-  PART F ✅글 구조 (🚀 레🚀 워✅
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+  PART F ✅글 구조 (\uD83D\uDE80 레\uD83D\uDE80 워✅
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
 
-✅<h1> 🚀 목: 경험🚀 호 + 궁금 ✅ 발.
-✅목차 (TOC): 🚀 커 링크 🚀 함. 🚀 라✅🚀  ✅✅  🚀 금 🚀.
-✅🚀 네✅카피 (IMG_0): 🚀 튜 ✅ 그 ✅  ✅✅ 격✅카피.
-✅🚀 니✅🚀 입부: 150✅🚀 내 🚀 약.
-✅본문 🚀 션: 6~8 ✅ 층 🚀 션.
-✅FAQ: 8~12 ✅ 도✅🚀 보✅
+✅<h1> \uD83D\uDE80 목: 경험\uD83D\uDE80 호 + 궁금 ✅ 발.
+✅목차 (TOC): \uD83D\uDE80 커 링크 \uD83D\uDE80 함. \uD83D\uDE80 라✅\uD83D\uDE80  ✅✅  \uD83D\uDE80 금 \uD83D\uDE80.
+✅\uD83D\uDE80 네✅카피 (IMG_0): \uD83D\uDE80 튜 ✅ 그 ✅  ✅✅ 격✅카피.
+✅\uD83D\uDE80 니✅\uD83D\uDE80 입부: 150✅\uD83D\uDE80 내 \uD83D\uDE80 약.
+✅본문 \uD83D\uDE80 션: 6~8 ✅ 층 \uD83D\uDE80 션.
+✅FAQ: 8~12 ✅ 도✅\uD83D\uDE80 보✅
 
-[🚀 자✅컴포🚀 트 🚀 래✅
+[\uD83D\uDE80 자✅컴포\uD83D\uDE80 트 \uD83D\uDE80 래✅
 - TOC: <div class='toc-box'>
-- 강조🚀 자: <div class='tip-box'>, <div class='warn-box'>
-- 🚀 문가 ✅ <div class='tip-box'><h3>Smileseon's Pro Tip</h3>...</div>
+- 강조\uD83D\uDE80 자: <div class='tip-box'>, <div class='warn-box'>
+- \uD83D\uDE80 문가 ✅ <div class='tip-box'><h3>Smileseon's Pro Tip</h3>...</div>
 - 버튼: <a href='URL' class='cluster-btn'>...</a>
-- 🚀 션: <h2 id='slug'>, <h3>
+- \uD83D\uDE80 션: <h2 id='slug'>, <h3>
 
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
-  PART J ✅E-E-A-T 🚀 질 🚀 진
-🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═🚀 ═
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
+  PART J ✅E-E-A-T \uD83D\uDE80 질 \uD83D\uDE80 진
+\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═\uD83D\uDE80 ═
 
-[Experience]: 글 🚀 체가 🚀 나✅경험 🚀 사(🚀 패/🚀 회✅1 ✅ 수).
-[Expertise]: 비교 🚀 이 🚀1 ✅ 수, 🚀 계 🚀 어 🚀 ✅
-[Authoritativeness]: 공식 🚀 이✅🚀 용, 공식 버튼 배치.
-[Trustworthiness]: 면책조항 🚀 수, 🚀 점/🚀 계 🚀 출.
+[Experience]: 글 \uD83D\uDE80 체가 \uD83D\uDE80 나✅경험 \uD83D\uDE80 사(\uD83D\uDE80 패/\uD83D\uDE80 회✅1 ✅ 수).
+[Expertise]: 비교 \uD83D\uDE80 이 \uD83D\uDE801 ✅ 수, \uD83D\uDE80 계 \uD83D\uDE80 어 \uD83D\uDE80 ✅
+[Authoritativeness]: 공식 \uD83D\uDE80 이✅\uD83D\uDE80 용, 공식 버튼 배치.
+[Trustworthiness]: 면책조항 \uD83D\uDE80 수, \uD83D\uDE80 점/\uD83D\uDE80 계 \uD83D\uDE80 출.
 
-# 🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━
+# \uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━
 # [VUE STUDIO ULTIMATE ADD-ON: ADDITIONAL RULES]
-# 🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━🚀 ━
-4. **목차(TOC) 배치  🚀기능**: 
-    - 반드✅본문 🚀 입부 직후✅\`<div class='toc-box'>\` 🚀배치🚀 세✅
-    - 모든 \`<h2>\` 🚀 그🚀 는 반드✅🚀 용 🚀관🚀 된 🚀 문 ID 🚀부🚀 하🚀 요. (✅ \`<h2 id='maintenance-tips'>\`)
-    - 목차 🚀 의 링크(\`href='#id'\`)🚀  🚀 션✅ID 🚀100% 🚀 치🚀 켜 🚀 릭 ✅🚀 당 🚀 션🚀 로 🚀 동🚀 게 만드🚀 요.
-5. **글박스 배치 규칙**: 글박스✅반드✅🚀 당 🚀 션✅🚀 명✅🚀 난 ✅🚀 음 H2 직전)✅배치🚀 세✅
-6. **면책 조항 강조**: 최하✅배치  🚀\`<strong>🚀 ️ 면책 조항</strong>\` 🚀 이 ✅ 함 🚀 수.
+# \uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━\uD83D\uDE80 ━
+4. **목차(TOC) 배치  \uD83D\uDE80기능**: 
+    - 반드✅본문 \uD83D\uDE80 입부 직후✅\`<div class='toc-box'>\` \uD83D\uDE80배치\uD83D\uDE80 세✅
+    - 모든 \`<h2>\` \uD83D\uDE80 그\uD83D\uDE80 는 반드✅\uD83D\uDE80 용 \uD83D\uDE80관\uD83D\uDE80 된 \uD83D\uDE80 문 ID \uD83D\uDE80부\uD83D\uDE80 하\uD83D\uDE80 요. (✅ \`<h2 id='maintenance-tips'>\`)
+    - 목차 \uD83D\uDE80 의 링크(\`href='#id'\`)\uD83D\uDE80  \uD83D\uDE80 션✅ID \uD83D\uDE80100% \uD83D\uDE80 치\uD83D\uDE80 켜 \uD83D\uDE80 릭 ✅\uD83D\uDE80 당 \uD83D\uDE80 션\uD83D\uDE80 로 \uD83D\uDE80 동\uD83D\uDE80 게 만드\uD83D\uDE80 요.
+5. **글박스 배치 규칙**: 글박스✅반드✅\uD83D\uDE80 당 \uD83D\uDE80 션✅\uD83D\uDE80 명✅\uD83D\uDE80 난 ✅\uD83D\uDE80 음 H2 직전)✅배치\uD83D\uDE80 세✅
+6. **면책 조항 강조**: 최하✅배치  \uD83D\uDE80\`<strong>\uD83D\uDE80 ️ 면책 조항</strong>\` \uD83D\uDE80 이 ✅ 함 \uD83D\uDE80 수.
 `;
 
 const STYLE = `
 <style>
-  @import url('https://fonts.googleapis.com/css2🚀family=Pretendard:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2\uD83D\uDE80family=Pretendard:wght@400;500;600;700&display=swap');
   .vue-premium { font-family: 'Pretendard', sans-serif; color: #334155; line-height: 1.85; font-size: 17px; max-width: 840px; margin: 0 auto; padding: 40px 24px; word-break: keep-all; background-color: #ffffff; }
   .vue-premium p { margin: 30px 0; letter-spacing: -0.015em; }
   .vue-premium h2 { font-size: 28px; font-weight: 800; color: #0f172a; margin: 80px 0 35px; display: flex; align-items: center; gap: 12px; }
@@ -1369,7 +1369,7 @@ const STYLE = `
   .vue-premium h3 { font-size: 22px; font-weight: 700; color: #1e293b; margin: 45px 0 20px; }
   .toc-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 35px; margin: 50px 0; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); }
   .toc-box h3 { margin-top: 0; font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 25px; display: flex; align-items: center; gap: 8px; }
-  .toc-box h3::before { content: '🚀  '; font-size: 22px; }
+  .toc-box h3::before { content: '\uD83D\uDE80  '; font-size: 22px; }
   .toc-box ul { list-style: none; padding: 0; margin: 0; }
   .toc-box li { margin-bottom: 14px; position: relative; padding-left: 24px; transition: all 0.2s; }
   .toc-box li::before { content: '\\25B6'; position: absolute; left: 0; color: #3b82f6; font-size: 10px; top: 6px; }
@@ -1401,14 +1401,14 @@ function getKST() {
 }
 
 function report(msg, type = 'info') {
-    const icon = type === 'success' 🚀 '✅ : type === 'warning' 🚀 '🚀 ️' : type === 'error' 🚀 '🚀  ' : '🚀 ️';
+    const icon = type === 'success' ? '\u2705' : type === 'warning' ? '\u26A0\uFE0F' : type === 'error' ? '\u274C' : '\u2139\uFE0F';
     const logMsg = `[${getKST().toLocaleTimeString('ko-KR')}] ${icon} ${msg}`;
     console.log(logMsg);
 }
 
 function clean(raw, mode = 'text') {
-    if (!raw) return mode === 'arr' 🚀 '[]' : '';
-    let txt = raw.replace(/`\`\`(html|json|javascript|js|css)🚀/gi, '').replace(/`\`\`/g, '').trim();
+    if (!raw) return mode === 'arr' \uD83D\uDE80 '[]' : '';
+    let txt = raw.replace(/`\`\`(html|json|javascript|js|css)\uD83D\uDE80/gi, '').replace(/`\`\`/g, '').trim();
     if (mode === 'arr') {
         const start = txt.indexOf('[');
         const end = txt.lastIndexOf(']');
@@ -1424,7 +1424,7 @@ async function callAI(model, prompt) {
     } catch (e) {
         const msg = e.message.toLowerCase();
         if (msg.includes('429') || msg.includes('quota') || msg.includes('exhausted')) {
-            report('✅[API 🚀 당✅초과] 60 ✅✅ 시 🚀 도🚀 니✅..', 'warning');
+            report('✅[API \uD83D\uDE80 당✅초과] 60 ✅✅ 시 \uD83D\uDE80 도\uD83D\uDE80 니✅..', 'warning');
             await new Promise(r => setTimeout(r, 60000));
             return callAI(model, prompt);
         }
@@ -1434,14 +1434,14 @@ async function callAI(model, prompt) {
 
 async function searchSerper(query, lang) {
     try {
-        report(`🚀   [🚀 시 🚀리서 🚀: "${query}" 관✅구 🚀 검✅🚀 이✅🚀 집  🚀..`);
-        const res = await axios.post('https://google.serper.dev/search', { q: query, gl: lang === 'ko' 🚀 'kr' : 'us', hl: lang }, { headers: { 'X-API-KEY': process.env.SERPER_API_KEY, 'Content-Type': 'application/json' }, timeout: 15000 });
+        report(`\uD83D\uDE80   [\uD83D\uDE80 시 \uD83D\uDE80리서 \uD83D\uDE80: "${query}" 관✅구 \uD83D\uDE80 검✅\uD83D\uDE80 이✅\uD83D\uDE80 집  \uD83D\uDE80..`);
+        const res = await axios.post('https://google.serper.dev/search', { q: query, gl: lang === 'ko' \uD83D\uDE80 'kr' : 'us', hl: lang }, { headers: { 'X-API-KEY': process.env.SERPER_API_KEY, 'Content-Type': 'application/json' }, timeout: 15000 });
         const data = res.data.organic || [];
         const result = { text: data.slice(0, 5).map(o => `Title: ${o.title}\nSnippet: ${o.snippet}`).join('\n\n') };
-        report(`🚀   [🚀 이✅🚀 보]: 🚀 위 ${data.length} 🚀검✅결과 분석 🚀 료`);
+        report(`\uD83D\uDE80   [\uD83D\uDE80 이✅\uD83D\uDE80 보]: \uD83D\uDE80 위 ${data.length} \uD83D\uDE80검✅결과 분석 \uD83D\uDE80 료`);
         return result;
     } catch (e) {
-        report(`🚀 ️ [Serper 🚀 러]: ${e.message}`, 'warning');
+        report(`\uD83D\uDE80 ️ [Serper \uD83D\uDE80 러]: ${e.message}`, 'warning');
         return { text: '' };
     }
 }
@@ -1450,7 +1450,7 @@ async function genImg(prompt, model, idx, ratio = '16:9', autoUpload = true) {
     try {
         const revised = await callAI(model, `Provide a high-quality stable diffusion prompt (${ratio}) based on: ${prompt}. Output only prompt.`);
         const cleanPrompt = revised.trim().replace(/^"|"$/g, '');
-        report(`🚀   [🚀  🚀지 🚀 계]: ${cleanPrompt.substring(0, 100)}${cleanPrompt.length > 100 🚀 '...' : ''}`);
+        report(`\uD83D\uDE80   [\uD83D\uDE80  \uD83D\uDE80지 \uD83D\uDE80 계]: ${cleanPrompt.substring(0, 100)}${cleanPrompt.length > 100 \uD83D\uDE80 '...' : ''}`);
 
         let imageUrl = '';
         const kieKey = process.env.KIE_API_KEY;
@@ -1458,37 +1458,37 @@ async function genImg(prompt, model, idx, ratio = '16:9', autoUpload = true) {
         // 1. Kie.ai (Premium Image Generation)
         if (kieKey && kieKey.length > 5) {
             try {
-                report(`   ✅[Kie.ai] z-image 🚀 출  🚀(🚀  🚀지 🚀 성)...`);
+                report(`   ✅[Kie.ai] z-image \uD83D\uDE80 출  \uD83D\uDE80(\uD83D\uDE80  \uD83D\uDE80지 \uD83D\uDE80 성)...`);
                 const cr = await axios.post('https://api.kie.ai/api/v1/jobs/createTask', {
                     model: 'z-image',
                     input: { prompt: revised + ', high-end, editorial photography, 8k', aspect_ratio: ratio }
                 }, { headers: { Authorization: 'Bearer ' + kieKey }, timeout: 20000 });
 
-                const tid = cr.data.taskId || cr.data.data🚀.taskId;
+                const tid = cr.data.taskId || cr.data.data\uD83D\uDE80.taskId;
                 if (tid) {
                     for (let a = 0; a < 15; a++) {
                         await new Promise(r => setTimeout(r, 6000));
-                        const pr = await axios.get('https://api.kie.ai/api/v1/jobs/recordInfo🚀taskId=' + tid, { headers: { Authorization: 'Bearer ' + kieKey }, timeout: 10000 });
-                        const state = pr.data.state || pr.data.data🚀.state;
+                        const pr = await axios.get('https://api.kie.ai/api/v1/jobs/recordInfo\uD83D\uDE80taskId=' + tid, { headers: { Authorization: 'Bearer ' + kieKey }, timeout: 10000 });
+                        const state = pr.data.state || pr.data.data\uD83D\uDE80.state;
                         if (state === 'success') {
-                            const resData = pr.data.resultJson || pr.data.data🚀.resultJson;
-                            const resJson = typeof resData === 'string' 🚀 JSON.parse(resData) : resData;
+                            const resData = pr.data.resultJson || pr.data.data\uD83D\uDE80.resultJson;
+                            const resJson = typeof resData === 'string' \uD83D\uDE80 JSON.parse(resData) : resData;
                             imageUrl = resJson.resultUrls[0];
                             break;
                         }
                         if (state === 'fail' || state === 'failed') break;
                     }
                 }
-            } catch (e) { report(`   ✅[Kie.ai] 중단 (${e.message}): 🚀 음 🚀 진 🚀 환`, 'warning'); }
+            } catch (e) { report(`   ✅[Kie.ai] 중단 (${e.message}): \uD83D\uDE80 음 \uD83D\uDE80 진 \uD83D\uDE80 환`, 'warning'); }
         }
 
         // 2. Pollinations.ai (FLUX Fallback)
         if (!imageUrl) {
-            const [w, h] = ratio === '2:3' 🚀 [800, 1200] : [1080, 720];
-            imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(revised)}🚀width=${w}&height=${h}&seed=${Math.floor(Math.random() * 99999)}&nologo=true&enhance=true`;
+            const [w, h] = ratio === '2:3' \uD83D\uDE80 [800, 1200] : [1080, 720];
+            imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(revised)}\uD83D\uDE80width=${w}&height=${h}&seed=${Math.floor(Math.random() * 99999)}&nologo=true&enhance=true`;
         }
 
-        // 3. ImgBB Upload (🚀 구 보 🚀)
+        // 3. ImgBB Upload (\uD83D\uDE80 구 보 \uD83D\uDE80)
         const res = await axios.get(imageUrl, { responseType: 'arraybuffer', timeout: 15000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         if (res.status !== 200) throw new Error("Image download failed");
 
@@ -1532,14 +1532,14 @@ async function genThumbnail(meta, model, ratio = '16:9') {
         const bgBuffer = await genImg(meta.bgPrompt || meta.mainTitle, model, 0, ratio, false);
         const bg = await loadImage(bgBuffer);
         const isPin = ratio === '2:3';
-        const w = isPin 🚀 800 : 1200;
-        const h = isPin 🚀 1200 : 630;
+        const w = isPin \uD83D\uDE80 800 : 1200;
+        const h = isPin \uD83D\uDE80 1200 : 630;
         const cv = createCanvas(w, h);
         const ctx = cv.getContext('2d');
 
         ctx.drawImage(bg, 0, 0, w, h);
 
-        // 그라🚀 이✅🚀 버🚀 이 ✅ 스✅가🚀 성 🚀 보
+        // 그라\uD83D\uDE80 이✅\uD83D\uDE80 버\uD83D\uDE80 이 ✅ 스✅가\uD83D\uDE80 성 \uD83D\uDE80 보
         const grad = ctx.createLinearGradient(0, h * 0.4, 0, h);
         grad.addColorStop(0, 'rgba(0,0,0,0)');
         grad.addColorStop(1, 'rgba(0,0,0,0.8)');
@@ -1552,7 +1552,7 @@ async function genThumbnail(meta, model, ratio = '16:9') {
 
         const mainTitle = (meta.mainTitle || meta.prompt || '').trim();
         const words = mainTitle.split(' ');
-        let fontSize = isPin 🚀 65 : 60;
+        let fontSize = isPin \uD83D\uDE80 65 : 60;
         ctx.font = `bold ${fontSize}px "Malgun Gothic", "Apple SD Gothic Neo", "NanumGothic", "Pretendard", sans-serif`;
 
         let line = '';
@@ -1570,13 +1570,13 @@ async function genThumbnail(meta, model, ratio = '16:9') {
         }
         lines.push(line.trim());
 
-        // 🚀 스🚀  🚀 🚀 무 많으 ✅ 트 🚀 기 🚀 동 축소
+        // \uD83D\uDE80 스\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 무 많으 ✅ 트 \uD83D\uDE80 기 \uD83D\uDE80 동 축소
         if (lines.length > 4) {
             fontSize = Math.floor(fontSize * 0.82);
             ctx.font = `bold ${fontSize}px "Malgun Gothic", "Apple SD Gothic Neo", "NanumGothic", "Pretendard", sans-serif`;
         }
 
-        let y = isPin 🚀 (h / 2) - (lines.length * (fontSize + 15) / 2) + 20 : (h * 0.5) - (lines.length * (fontSize + 15) / 2) + 15;
+        let y = isPin \uD83D\uDE80 (h / 2) - (lines.length * (fontSize + 15) / 2) + 20 : (h * 0.5) - (lines.length * (fontSize + 15) / 2) + 15;
         for (let l of lines) {
             ctx.fillText(l, w / 2, y);
             y += fontSize + 15;
@@ -1595,12 +1595,12 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
     if (extraLinks.length > 0) {
         const links = extraLinks.map((l, idx) => `[Spoke ${idx + 1}] Title: ${l.title}, URL: ${l.url}`).join('\n');
         const isKo = lang === 'ko';
-        const btnText = isKo 🚀 "🚀 세✅보기 ✅ : "Read More ✅;
+        const btnText = isKo \uD83D\uDE80 "\uD83D\uDE80 세✅보기 ✅ : "Read More ✅;
         const contextPrompt = isKo
-            🚀 `[INTERNAL_LINK_PUNITIVE_MISSION]: ✅🚀 스🚀  🚀 메인 🚀 브(Pillar) 글🚀 니✅ 
-            ✅🚀  🚀 규칙: 🚀 래 🚀 공✅${extraLinks.length}개의 🚀 브 글 🚀 약 🚀 션 🚀 에✅**반드✅각각 🚀 나✅* 🚀 래 버튼 코드 ✅ 입🚀 세✅
-            코드 🚀 시: <a href='🚀 브글URL' class='cluster-btn'>${btnText}</a>
-            🚀 락 ✅SEO 🚀 략✅🚀 전✅🚀 패🚀  🚀 🚀 🚀 확✅${extraLinks.length}개의 버튼✅본문 곳곳✅박 🚀 🚀 어✅🚀 니✅`
+            \uD83D\uDE80 `[INTERNAL_LINK_PUNITIVE_MISSION]: ✅\uD83D\uDE80 스\uD83D\uDE80  \uD83D\uDE80 메인 \uD83D\uDE80 브(Pillar) 글\uD83D\uDE80 니✅ 
+            ✅\uD83D\uDE80  \uD83D\uDE80 규칙: \uD83D\uDE80 래 \uD83D\uDE80 공✅${extraLinks.length}개의 \uD83D\uDE80 브 글 \uD83D\uDE80 약 \uD83D\uDE80 션 \uD83D\uDE80 에✅**반드✅각각 \uD83D\uDE80 나✅* \uD83D\uDE80 래 버튼 코드 ✅ 입\uD83D\uDE80 세✅
+            코드 \uD83D\uDE80 시: <a href='\uD83D\uDE80 브글URL' class='cluster-btn'>${btnText}</a>
+            \uD83D\uDE80 락 ✅SEO \uD83D\uDE80 략✅\uD83D\uDE80 전✅\uD83D\uDE80 패\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80 확✅${extraLinks.length}개의 버튼✅본문 곳곳✅박 \uD83D\uDE80 \uD83D\uDE80 어✅\uD83D\uDE80 니✅`
             : `[INTERNAL_LINK_PUNITIVE_MISSION]: This is a Pillar post. 
             ✅STRICT RULE: After EACH of the following ${extraLinks.length} summary sections, you MUST insert the following button code:
             Example: <a href='SpokeURL' class='cluster-btn'>${btnText}</a>
@@ -1608,42 +1608,42 @@ async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks
         pillarContext = `\n${contextPrompt}\n${links}`;
     }
 
-    const personaTag = persona 🚀 `\n[SPECIFIC_PERSONA]: ${persona}` : '';
-    const langTag = `\n[TARGET_LANGUAGE]: ${lang === 'ko' 🚀 'Korean' : 'English'}${personaTag}`;
-    report(`🚀   [${idx}/${total}] 집필 🚀 작: ${target}`);
-    report(`🚀   [AI 🚀 롬🚀 트 🚀 성  🚀: 리서 ✅ 이✅${searchData.length}✅🚀 함...`);
+    const personaTag = persona \uD83D\uDE80 `\n[SPECIFIC_PERSONA]: ${persona}` : '';
+    const langTag = `\n[TARGET_LANGUAGE]: ${lang === 'ko' \uD83D\uDE80 'Korean' : 'English'}${personaTag}`;
+    report(`\uD83D\uDE80   [${idx}/${total}] 집필 \uD83D\uDE80 작: ${target}`);
+    report(`\uD83D\uDE80   [AI \uD83D\uDE80 롬\uD83D\uDE80 트 \uD83D\uDE80 성  \uD83D\uDE80: 리서 ✅ 이✅${searchData.length}✅\uD83D\uDE80 함...`);
 
     const h1Instruction = lang === 'ko'
-        🚀 "<h1>(10🚀 차 SEO 🚀 문가✅구 🚀 🚀 단 🚀 출✅🚀 한 롱테✅🚀 워✅🚀 목)</h1>"
+        \uD83D\uDE80 "<h1>(10\uD83D\uDE80 차 SEO \uD83D\uDE80 문가✅구 \uD83D\uDE80 \uD83D\uDE80 단 \uD83D\uDE80 출✅\uD83D\uDE80 한 롱테✅\uD83D\uDE80 워✅\uD83D\uDE80 목)</h1>"
         : "<h1>(SEO Optimized Long-tail Keyword Title for Google Ranking)</h1>";
 
-    // MISSION 분량 🚀 보 ✅ 한 강력✅지 🚀추 🚀
+    // MISSION 분량 \uD83D\uDE80 보 ✅ 한 강력✅지 \uD83D\uDE80추 \uD83D\uDE80
     const m1Prompt = MASTER_GUIDELINE + `
 [MISSION: FULL POST GENERATION] 
-🚀 확✅🚀 래 🚀 맷✅맞춰✅✅번에 모든 글✅🚀 성🚀 야 🚀 니✅ 🚀  🚀 🚀 맷✅🚀 기지 마세✅
-🚀 체 글 분량🚀  6,000✅8,000✅🚀 상 🚀 보🚀 도 ✅ 세🚀 게 🚀 ✅🚀 세✅ 🚀 히, 짧게 🚀 어가지 말고 본문✅🚀 션 ✅ 명✅매우 길게 🚀 려✅🚀 니✅
+\uD83D\uDE80 확✅\uD83D\uDE80 래 \uD83D\uDE80 맷✅맞춰✅✅번에 모든 글✅\uD83D\uDE80 성\uD83D\uDE80 야 \uD83D\uDE80 니✅ \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 맷✅\uD83D\uDE80 기지 마세✅
+\uD83D\uDE80 체 글 분량\uD83D\uDE80  6,000✅8,000✅\uD83D\uDE80 상 \uD83D\uDE80 보\uD83D\uDE80 도 ✅ 세\uD83D\uDE80 게 \uD83D\uDE80 ✅\uD83D\uDE80 세✅ \uD83D\uDE80 히, 짧게 \uD83D\uDE80 어가지 말고 본문✅\uD83D\uDE80 션 ✅ 명✅매우 길게 \uD83D\uDE80 려✅\uD83D\uDE80 니✅
 
-[🚀 수 🚀 자✅컴포🚀 트 - 반드✅본문✅🚀 함🚀 세✅:
-✅배치 🚀 략:
-    - 글✅지루해지지 🚀 도 🚀 H2 🚀 스🚀  🚀 2개째 🚀 장🚀 는 🚀 🚀 밍마다 🚀 입🚀 여 🚀 자✅🚀 선✅🚀 절🚀 게 🚀 기🚀 세✅
+[\uD83D\uDE80 수 \uD83D\uDE80 자✅컴포\uD83D\uDE80 트 - 반드✅본문✅\uD83D\uDE80 함\uD83D\uDE80 세✅:
+✅배치 \uD83D\uDE80 략:
+    - 글✅지루해지지 \uD83D\uDE80 도 \uD83D\uDE80 H2 \uD83D\uDE80 스\uD83D\uDE80  \uD83D\uDE80 2개째 \uD83D\uDE80 장\uD83D\uDE80 는 \uD83D\uDE80 \uD83D\uDE80 밍마다 \uD83D\uDE80 입\uD83D\uDE80 여 \uD83D\uDE80 자✅\uD83D\uDE80 선✅\uD83D\uDE80 절\uD83D\uDE80 게 \uD83D\uDE80 기\uD83D\uDE80 세✅
     - **[Time Awareness]**: Today's date is ${getKST().toISOString().split('T')[0]}. Always write based on the latest available information as of today. If referencing years, focus on the current year and future trends.
 
-(A) 🚀 사🚀 트 박스 ✅<div class='insight-box'><strong>🚀   Key Insight</strong><br>🚀 심 🚀 인✅🚀 용</div> ✅최소 2 🚀
-(B) 🚀 문가 꿀✅✅<div class='tip-box'><strong>🚀   Smileseon's Pro Tip</strong><br>꿀✅🚀 용</div> ✅최소 2 🚀
-(C) 면책 조항 (Disclaimer): 반드✅글✅최하🚀 에 🚀 치🚀 키 ✅ 이블을 강조🚀 세✅
-(D) 치명✅주의 ✅<div class='warn-box'><strong>🚀   Critical Warning</strong><br>주의 🚀 용</div> ✅최소 1 🚀
-(E) 🚀 뢰 🚀 이✅✅<div class='data-box'><strong>🚀   Fact Check</strong><br>🚀 트 체크 🚀 용</div> ✅최소 2 🚀
-(F) 마무 🚀박스 ✅<div class='closing-box'><h2>최종 마무 🚀/h2><p>🚀 심 🚀 약</p></div> ✅글  🚀마 🚀막에 반드✅1 🚀
-(G)  ✅ 션✅가🚀 하 🚀<table> 🚀 함 (4🚀 x4✅🚀 상✅비교 🚀 이✅
-(H) FAQ 🚀 션✅최소 8~10개의 Q&A 🚀 함
+(A) \uD83D\uDE80 사\uD83D\uDE80 트 박스 ✅<div class='insight-box'><strong>\uD83D\uDE80   Key Insight</strong><br>\uD83D\uDE80 심 \uD83D\uDE80 인✅\uD83D\uDE80 용</div> ✅최소 2 \uD83D\uDE80
+(B) \uD83D\uDE80 문가 꿀✅✅<div class='tip-box'><strong>\uD83D\uDE80   Smileseon's Pro Tip</strong><br>꿀✅\uD83D\uDE80 용</div> ✅최소 2 \uD83D\uDE80
+(C) 면책 조항 (Disclaimer): 반드✅글✅최하\uD83D\uDE80 에 \uD83D\uDE80 치\uD83D\uDE80 키 ✅ 이블을 강조\uD83D\uDE80 세✅
+(D) 치명✅주의 ✅<div class='warn-box'><strong>\uD83D\uDE80   Critical Warning</strong><br>주의 \uD83D\uDE80 용</div> ✅최소 1 \uD83D\uDE80
+(E) \uD83D\uDE80 뢰 \uD83D\uDE80 이✅✅<div class='data-box'><strong>\uD83D\uDE80   Fact Check</strong><br>\uD83D\uDE80 트 체크 \uD83D\uDE80 용</div> ✅최소 2 \uD83D\uDE80
+(F) 마무 \uD83D\uDE80박스 ✅<div class='closing-box'><h2>최종 마무 \uD83D\uDE80/h2><p>\uD83D\uDE80 심 \uD83D\uDE80 약</p></div> ✅글  \uD83D\uDE80마 \uD83D\uDE80막에 반드✅1 \uD83D\uDE80
+(G)  ✅ 션✅가\uD83D\uDE80 하 \uD83D\uDE80<table> \uD83D\uDE80 함 (4\uD83D\uDE80 x4✅\uD83D\uDE80 상✅비교 \uD83D\uDE80 이✅
+(H) FAQ \uD83D\uDE80 션✅최소 8~10개의 Q&A \uD83D\uDE80 함
 
 [META_DATA_START]
 {
-  "IMG_0": { "mainTitle": "🚀 네🚀 용 매력🚀 인 짧 🚀 🚀 목", "bgPrompt": "🚀 네✅배경 🚀  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_1": { "prompt": "본문 첫번 ✅  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_2": { "prompt": "본문 🚀 번 ✅  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_3": { "prompt": "본문 🚀 번 ✅  🚀지 묘사 🚀 문 🚀 롬🚀 트" },
-  "IMG_PINTEREST": { "prompt": "Pinterest 🚀 용 🚀 로✅2:3) 고퀄리✅🚀  🚀지 묘사 🚀 문 🚀 롬🚀 트" }
+  "IMG_0": { "mainTitle": "\uD83D\uDE80 네\uD83D\uDE80 용 매력\uD83D\uDE80 인 짧 \uD83D\uDE80 \uD83D\uDE80 목", "bgPrompt": "\uD83D\uDE80 네✅배경 \uD83D\uDE80  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_1": { "prompt": "본문 첫번 ✅  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_2": { "prompt": "본문 \uD83D\uDE80 번 ✅  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_3": { "prompt": "본문 \uD83D\uDE80 번 ✅  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" },
+  "IMG_PINTEREST": { "prompt": "Pinterest \uD83D\uDE80 용 \uD83D\uDE80 로✅2:3) 고퀄리✅\uD83D\uDE80  \uD83D\uDE80지 묘사 \uD83D\uDE80 문 \uD83D\uDE80 롬\uD83D\uDE80 트" }
 }
 [META_DATA_END]
 
@@ -1652,30 +1652,30 @@ ${h1Instruction}
 <div class='toc-box'>
   <h3>Table of Contents</h3>
   <ul>
-    <li><a href='#section-1'>첫번 ✅ 션 🚀 목</a></li>
-    <li><a href='#section-2'>🚀 번 ✅ 션 🚀 목</a></li>
+    <li><a href='#section-1'>첫번 ✅ 션 \uD83D\uDE80 목</a></li>
+    <li><a href='#section-2'>\uD83D\uDE80 번 ✅ 션 \uD83D\uDE80 목</a></li>
   </ul>
 </div>
 <h2 id='section-1'>첫번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='insight-box'><strong>🚀   Key Insight</strong><br>🚀 사🚀 트 🚀 용</div>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='insight-box'><strong>\uD83D\uDE80   Key Insight</strong><br>\uD83D\uDE80 사\uD83D\uDE80 트 \uD83D\uDE80 용</div>
 [[IMG_1]]
-<h2 id='section-2'>🚀 번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='tip-box'><strong>🚀   Smileseon's Pro Tip</strong><br>꿀✅🚀 용</div>
-<h2>🚀 번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='data-box'><strong>🚀   Fact Check</strong><br>🚀 이✅🚀 용</div>
+<h2 id='section-2'>\uD83D\uDE80 번 ✅ 션</h2>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='tip-box'><strong>\uD83D\uDE80   Smileseon's Pro Tip</strong><br>꿀✅\uD83D\uDE80 용</div>
+<h2>\uD83D\uDE80 번 ✅ 션</h2>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='data-box'><strong>\uD83D\uDE80   Fact Check</strong><br>\uD83D\uDE80 이✅\uD83D\uDE80 용</div>
 [[IMG_2]]
-<h2>🚀 번 ✅ 션</h2>
-<p>본문 🚀 용...</p>
-<div class='warn-box'><strong>🚀   Critical Warning</strong><br>주의 🚀 용</div>
+<h2>\uD83D\uDE80 번 ✅ 션</h2>
+<p>본문 \uD83D\uDE80 용...</p>
+<div class='warn-box'><strong>\uD83D\uDE80   Critical Warning</strong><br>주의 \uD83D\uDE80 용</div>
 [[IMG_3]]
-... 🚀 까지 (8~10개의 FAQ, closing-box 마무 ✅ 함)
-<div class='closing-box'><h2>최종 마무 🚀/h2><p>🚀 심 🚀 약</p></div>
+... \uD83D\uDE80 까지 (8~10개의 FAQ, closing-box 마무 ✅ 함)
+<div class='closing-box'><h2>최종 마무 \uD83D\uDE80/h2><p>\uD83D\uDE80 심 \uD83D\uDE80 약</p></div>
 [CONTENT_END]
 
-✅경고: 본문 🚀 에 🚀  🚀지 🚀 입부🚀 는 🚀  🚀 🚀<img src=...> 🚀 그 ✅  🚀 말고, 🚀 직 [[IMG_1]], [[IMG_2]], [[IMG_3]]  🚀같 🚀 치환🚀 만 🚀 으🚀 요.
+✅경고: 본문 \uD83D\uDE80 에 \uD83D\uDE80  \uD83D\uDE80지 \uD83D\uDE80 입부\uD83D\uDE80 는 \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80<img src=...> \uD83D\uDE80 그 ✅  \uD83D\uDE80 말고, \uD83D\uDE80 직 [[IMG_1]], [[IMG_2]], [[IMG_3]]  \uD83D\uDE80같 \uD83D\uDE80 치환\uD83D\uDE80 만 \uD83D\uDE80 으\uD83D\uDE80 요.
 ${target}
 ${searchData}
 ${pillarContext}
@@ -1687,9 +1687,9 @@ ${langTag}`;
     let m0 = null;
     const imgMetas = {};
 
-    // === 메 ✅ 이✅🚀 싱 (🚀 규 🚀 맷 + 🚀 거✅🚀 맷 모두 지✅ ===
+    // === 메 ✅ 이✅\uD83D\uDE80 싱 (\uD83D\uDE80 규 \uD83D\uDE80 맷 + \uD83D\uDE80 거✅\uD83D\uDE80 맷 모두 지✅ ===
     try {
-        const metaMatch = m1.match(/\[META_DATA_START\]([\s\S]*🚀)\[META_DATA_END\]/i);
+        const metaMatch = m1.match(/\[META_DATA_START\]([\s\S]*\uD83D\uDE80)\[META_DATA_END\]/i);
         if (metaMatch) {
             const cleanJsonStr = metaMatch[1].replace(/```json/i, '').replace(/```/g, '').trim();
             const metaJson = JSON.parse(cleanJsonStr);
@@ -1699,43 +1699,43 @@ ${langTag}`;
             if (metaJson.IMG_3) imgMetas[3] = metaJson.IMG_3;
             if (metaJson.IMG_PINTEREST) imgMetas['P'] = metaJson.IMG_PINTEREST;
         }
-    } catch (e) { report('🚀 ️ 🚀 규 메 🚀 🚀 싱 🚀 패, 🚀 거✅🚀 싱 🚀 도', 'warning'); }
+    } catch (e) { report('\uD83D\uDE80 ️ \uD83D\uDE80 규 메 \uD83D\uDE80 \uD83D\uDE80 싱 \uD83D\uDE80 패, \uD83D\uDE80 거✅\uD83D\uDE80 싱 \uD83D\uDE80 도', 'warning'); }
 
-    // 🚀 거✅🚀 맷 🚀 싱 (IMG_0: { mainTitle: "...", bgPrompt: "..." })
+    // \uD83D\uDE80 거✅\uD83D\uDE80 맷 \uD83D\uDE80 싱 (IMG_0: { mainTitle: "...", bgPrompt: "..." })
     if (!m0) {
         const legacyRegex = /IMG_(\d+):\s*\{([^}]*)\}/gi;
         let lm;
         while ((lm = legacyRegex.exec(m1)) !== null) {
             const i = Number(lm[1]), raw = lm[2];
-            if (i === 0) m0 = { mainTitle: (raw.match(/mainTitle:\s*['"](.*🚀)['"]/i) || [])[1] || target, bgPrompt: (raw.match(/bgPrompt:\s*['"](.*🚀)['"]/i) || raw.match(/prompt:\s*['"](.*🚀)['"]/i) || [])[1] || target };
-            else imgMetas[i] = { prompt: (raw.match(/prompt:\s*['"](.*🚀)['"]/i) || [])[1] || target };
+            if (i === 0) m0 = { mainTitle: (raw.match(/mainTitle:\s*['"](.*\uD83D\uDE80)['"]/i) || [])[1] || target, bgPrompt: (raw.match(/bgPrompt:\s*['"](.*\uD83D\uDE80)['"]/i) || raw.match(/prompt:\s*['"](.*\uD83D\uDE80)['"]/i) || [])[1] || target };
+            else imgMetas[i] = { prompt: (raw.match(/prompt:\s*['"](.*\uD83D\uDE80)['"]/i) || [])[1] || target };
         }
     }
 
     if (!m0) m0 = { mainTitle: target, bgPrompt: 'Abstract premium background' };
 
     // === 본문 추출 ===
-    const contentMatch = m1.match(/\[CONTENT_START\]([\s\S]*🚀)\[CONTENT_END\]/i);
+    const contentMatch = m1.match(/\[CONTENT_START\]([\s\S]*\uD83D\uDE80)\[CONTENT_END\]/i);
     if (contentMatch) {
         finalHtml = contentMatch[1].trim();
     } else {
         const metaEndIdx = m1.indexOf('[META_DATA_END]');
-        finalHtml = metaEndIdx !== -1 🚀 m1.substring(metaEndIdx + 15).trim() : clean(m1, 'text');
+        finalHtml = metaEndIdx !== -1 \uD83D\uDE80 m1.substring(metaEndIdx + 15).trim() : clean(m1, 'text');
     }
 
-    // === 본문🚀 서 메 ✅ 이✅🚀 여 ✅ 전 🚀 거 (최강 🚀 규✅ ===
-    finalHtml = finalHtml.replace(/\[META_DATA_START\][\s\S]*🚀\[META_DATA_END\]/gi, '');
+    // === 본문\uD83D\uDE80 서 메 ✅ 이✅\uD83D\uDE80 여 ✅ 전 \uD83D\uDE80 거 (최강 \uD83D\uDE80 규✅ ===
+    finalHtml = finalHtml.replace(/\[META_DATA_START\][\s\S]*\uD83D\uDE80\[META_DATA_END\]/gi, '');
     finalHtml = finalHtml.replace(/\[CONTENT_START\]/gi, '').replace(/\[CONTENT_END\]/gi, '');
-    finalHtml = finalHtml.replace(/IMG_\d+\s*[:=]\s*\{[\s\S]*🚀\}/gi, '');
-    finalHtml = finalHtml.replace(/\{\s*"IMG_\d+"[\s\S]*🚀\}/g, '');
-    finalHtml = finalHtml.replace(/```json[\s\S]*🚀```/gi, '');
+    finalHtml = finalHtml.replace(/IMG_\d+\s*[:=]\s*\{[\s\S]*\uD83D\uDE80\}/gi, '');
+    finalHtml = finalHtml.replace(/\{\s*"IMG_\d+"[\s\S]*\uD83D\uDE80\}/g, '');
+    finalHtml = finalHtml.replace(/```json[\s\S]*\uD83D\uDE80```/gi, '');
     finalHtml = finalHtml.replace(/^\s*text\s*$/gm, '');
     finalHtml = finalHtml.trim();
 
     let finalTitle = target;
-    const h1Match = finalHtml.match(/<h1.*🚀>([\s\S]*🚀)<\/h1>/i);
+    const h1Match = finalHtml.match(/<h1.*\uD83D\uDE80>([\s\S]*\uD83D\uDE80)<\/h1>/i);
     if (h1Match) finalTitle = h1Match[1].replace(/<[^>]+>/g, '').trim();
-    finalHtml = finalHtml.replace(/<h1.*🚀>[\s\S]*🚀<\/h1>/gi, '').trim();
+    finalHtml = finalHtml.replace(/<h1.*\uD83D\uDE80>[\s\S]*\uD83D\uDE80<\/h1>/gi, '').trim();
 
     if (m0) {
         const url0 = await genThumbnail(m0, model);
@@ -1747,7 +1747,7 @@ ${langTag}`;
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             finalHtml = finalHtml.replace(reg, `<div style='text-align:center; margin:35px 0;'><img src='${urlI}' alt='${target}' style='width:100%; border-radius:12px;'></div>`);
         } else {
-            // 만약 치환🚀  🚀 🚀 다 🚀H2 🚀 그 🚀 에 강제 ✅  🚀지 🚀주입
+            // 만약 치환\uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80 다 \uD83D\uDE80H2 \uD83D\uDE80 그 \uD83D\uDE80 에 강제 ✅  \uD83D\uDE80지 \uD83D\uDE80주입
             const urlI = await genImg((imgMetas[i] || {}).prompt || target, model, i);
             let injected = false;
             let count = 0;
@@ -1762,13 +1762,13 @@ ${langTag}`;
         }
     }
 
-    // === [IMG_PINTEREST] 처리 (2:3 🚀 직 🚀  🚀지 - 최상✅🚀 든 🚀 네✅ ===
+    // === [IMG_PINTEREST] 처리 (2:3 \uD83D\uDE80 직 \uD83D\uDE80  \uD83D\uDE80지 - 최상✅\uD83D\uDE80 든 \uD83D\uDE80 네✅ ===
     const pinReg = /\s*\[\[IMG_PINTEREST\]\]\s*/gi;
     const pinMeta = imgMetas['P'] || { mainTitle: target, bgPrompt: target + " vertical pinterest style" };
     const urlPin = await genThumbnail(pinMeta, model, '2:3');
     const pinHtml = `<div style='display:none;'><img src='${urlPin}' alt='Pinterest Optimized - ${target}'></div>`;
 
-    // 무조 🚀최상🚀 에 🚀 든🚀 로 🚀 입 (기존 치환🚀 는 🚀 거)
+    // 무조 \uD83D\uDE80최상\uD83D\uDE80 에 \uD83D\uDE80 든\uD83D\uDE80 로 \uD83D\uDE80 입 (기존 치환\uD83D\uDE80 는 \uD83D\uDE80 거)
     finalHtml = pinHtml + finalHtml.replace(pinReg, '');
 
     finalHtml = finalHtml.replace(/\[\[IMG_\d+\]\]/gi, '').trim();
@@ -1776,8 +1776,8 @@ ${langTag}`;
     // [CRITICAL FIX]: Remove redundant hardcoded disclaimer here because AI will generate it based on Master Guideline.
     // This prevents double disclaimer issue.
     const res = await blogger.posts.insert({ blogId: bId, requestBody: { title: finalTitle, content: STYLE + finalHtml + '</div>', published: pTime.toISOString() } });
-    report(`🚀   🚀[🚀 스✅🚀 공]: "${finalTitle}"`, 'success');
-    report(`🚀   [URL]: ${res.data.url}`);
+    report(`\uD83D\uDE80   \uD83D\uDE80[\uD83D\uDE80 스✅\uD83D\uDE80 공]: "${finalTitle}"`, 'success');
+    report(`\uD83D\uDE80   [URL]: ${res.data.url}`);
     return { title: finalTitle, url: res.data.url };
 }
 
@@ -1789,41 +1789,41 @@ async function run() {
     auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
     const blogger = google.blogger({ version: 'v3', auth });
 
-    report(`🚀 ️ 🚀 정✅로드🚀 습🚀 다. (🚀 어: ${config.blog_lang}, 모드: ${config.post_mode})`);
+    report(`\uD83D\uDE80 ️ \uD83D\uDE80 정✅로드\uD83D\uDE80 습\uD83D\uDE80 다. (\uD83D\uDE80 어: ${config.blog_lang}, 모드: ${config.post_mode})`);
 
-    report('🚀   🚀[Turbo Full-Mode]: 🚀 리미엄 🚀 러🚀 터 구축 🚀 작');
+    report('\uD83D\uDE80   \uD83D\uDE80[Turbo Full-Mode]: \uD83D\uDE80 리미엄 \uD83D\uDE80 러\uD83D\uDE80 터 구축 \uD83D\uDE80 작');
 
     let baseKeyword = config.pillar_topic || 'PC Hardware';
     const categories = {
-        "1": { name: "PC Repair & Maintenance", query: "PC repair maintenance tips guide 2026", persona: "15✅경력✅베테✅PC 🚀 비✅ },
-        "2": { name: "Latest Hardware & Parts", query: "latest PC components hardware news 2026", persona: "🚀 드🚀 어 벤치마크 🚀 문 리뷰✅ },
-        "3": { name: "Gaming & Peripherals", query: "best gaming gear peripherals trends 2026", persona: "🚀 로게이 🚀출신✅게이 🚀기어 🚀 문가" },
-        "4": { name: "AI & Future Technology", query: "future AI technology trends 2026", persona: "🚀 리콘밸 🚀기술 🚀 략가🚀 자 미래🚀 자" },
-        "5": { name: "Coding & Software", query: "programming software development trends 2026", persona: "🚀 🚀 택 🚀 니✅🚀 프🚀 웨✅🚀  ✅ 어" },
-        "6": { name: "Cooking & Recipes", query: "trending food recipes cooking tips 2026", persona: "미쉐 🚀가🚀 드 🚀  ✅ 의 🚀 리 🚀 구가" },
-        "7": { name: "Fashion & Beauty", query: "latest fashion beauty style trends 2026", persona: "글로벌 🚀 션 🚀 디🚀 이✅🚀  ✅✅ 렉✅ },
-        "8": { name: "Health & Medical", query: "health wellness medical insights 2026", persona: "🚀 문 🚀 스 케✅🚀 드바이🚀 " },
-        "9": { name: "Global News & Issues", query: "global news world issue summary 2026", persona: " 🚀   🚀 세 🚀 문 🚀 사 🚀 론가" },
-        "10": { name: "Finance & Stock", query: "finance stock market investment trends 2026", persona: "🚀 스🚀 리✅출신 🚀 자 칼럼🚀 스✅ },
-        "11": { name: "Travel & Adventure", query: "world travel destination adventure 2026", persona: "✅   ✅ 래 ✅  ✅ 자 🚀 험가" },
-        "12": { name: "Home & Interior", query: "modern home interior design furniture 2026", persona: "🚀 이🚀 드 공간 🚀 자🚀 너" }
+        "1": { name: "PC Repair & Maintenance", query: "PC repair maintenance tips guide 2026", persona: "15✅경력✅베테✅PC \uD83D\uDE80 비✅ },
+        "2": { name: "Latest Hardware & Parts", query: "latest PC components hardware news 2026", persona: "\uD83D\uDE80 드\uD83D\uDE80 어 벤치마크 \uD83D\uDE80 문 리뷰✅ },
+        "3": { name: "Gaming & Peripherals", query: "best gaming gear peripherals trends 2026", persona: "\uD83D\uDE80 로게이 \uD83D\uDE80출신✅게이 \uD83D\uDE80기어 \uD83D\uDE80 문가" },
+        "4": { name: "AI & Future Technology", query: "future AI technology trends 2026", persona: "\uD83D\uDE80 리콘밸 \uD83D\uDE80기술 \uD83D\uDE80 략가\uD83D\uDE80 자 미래\uD83D\uDE80 자" },
+        "5": { name: "Coding & Software", query: "programming software development trends 2026", persona: "\uD83D\uDE80 \uD83D\uDE80 택 \uD83D\uDE80 니✅\uD83D\uDE80 프\uD83D\uDE80 웨✅\uD83D\uDE80  ✅ 어" },
+        "6": { name: "Cooking & Recipes", query: "trending food recipes cooking tips 2026", persona: "미쉐 \uD83D\uDE80가\uD83D\uDE80 드 \uD83D\uDE80  ✅ 의 \uD83D\uDE80 리 \uD83D\uDE80 구가" },
+        "7": { name: "Fashion & Beauty", query: "latest fashion beauty style trends 2026", persona: "글로벌 \uD83D\uDE80 션 \uD83D\uDE80 디\uD83D\uDE80 이✅\uD83D\uDE80  ✅✅ 렉✅ },
+        "8": { name: "Health & Medical", query: "health wellness medical insights 2026", persona: "\uD83D\uDE80 문 \uD83D\uDE80 스 케✅\uD83D\uDE80 드바이\uD83D\uDE80 " },
+        "9": { name: "Global News & Issues", query: "global news world issue summary 2026", persona: " \uD83D\uDE80   \uD83D\uDE80 세 \uD83D\uDE80 문 \uD83D\uDE80 사 \uD83D\uDE80 론가" },
+        "10": { name: "Finance & Stock", query: "finance stock market investment trends 2026", persona: "\uD83D\uDE80 스\uD83D\uDE80 리✅출신 \uD83D\uDE80 자 칼럼\uD83D\uDE80 스✅ },
+        "11": { name: "Travel & Adventure", query: "world travel destination adventure 2026", persona: "✅   ✅ 래 ✅  ✅ 자 \uD83D\uDE80 험가" },
+        "12": { name: "Home & Interior", query: "modern home interior design furniture 2026", persona: "\uD83D\uDE80 이\uD83D\uDE80 드 공간 \uD83D\uDE80 자\uD83D\uDE80 너" }
     };
 
-    if (baseKeyword === '🚀 동🚀 성') {
+    if (baseKeyword === '\uD83D\uDE80 동\uD83D\uDE80 성') {
         const targetCats = config.target_categories || ["1"];
         let selectedCatKey;
 
         if (targetCats.includes("ALL")) {
             const keys = Object.keys(categories);
             selectedCatKey = keys[Math.floor(Math.random() * keys.length)];
-            report(`🚀   [ALL 모드]: 🚀 체 카테고리  ✅ 덤 🚀 정 (${categories[selectedCatKey].name})`);
+            report(`\uD83D\uDE80   [ALL 모드]: \uD83D\uDE80 체 카테고리  ✅ 덤 \uD83D\uDE80 정 (${categories[selectedCatKey].name})`);
         } else {
             selectedCatKey = targetCats[Math.floor(Math.random() * targetCats.length)];
-            report(`🚀   [복수 카테고리]: 🚀 택✅목록  ✅ 정 (${categories[selectedCatKey].name})`);
+            report(`\uD83D\uDE80   [복수 카테고리]: \uD83D\uDE80 택✅목록  ✅ 정 (${categories[selectedCatKey].name})`);
         }
 
         const currentCat = categories[selectedCatKey];
-        report(`🚀   [🚀 시 ✅ 렌✅분석]: ${currentCat.name} 분야✅🚀 슈 🚀 악...`);
+        report(`\uD83D\uDE80   [\uD83D\uDE80 시 ✅ 렌✅분석]: ${currentCat.name} 분야✅\uD83D\uDE80 슈 \uD83D\uDE80 악...`);
 
         const trendSource = await searchSerper(currentCat.query, config.blog_lang);
         const pool = config.clusters || [];
@@ -1845,15 +1845,15 @@ async function run() {
         const selectionRes = await callAI(model, selectionPrompt);
         baseKeyword = selectionRes.trim().replace(/^"|"$/g, '');
         config.selected_persona = currentCat.persona;
-        report(`🚀   최종 🚀 략 주제 🚀 정: [ ${baseKeyword} ]`);
+        report(`\uD83D\uDE80   최종 \uD83D\uDE80 략 주제 \uD83D\uDE80 정: [ ${baseKeyword} ]`);
     } else {
-        report(`🚀   고정 🚀 워✅🚀 용: ${baseKeyword}`);
-        config.selected_persona = ''; // 고정 🚀 워✅🚀 에✅🚀 르🚀 나 명시 ✅✅기본 ✅ 용)
+        report(`\uD83D\uDE80   고정 \uD83D\uDE80 워✅\uD83D\uDE80 용: ${baseKeyword}`);
+        config.selected_persona = ''; // 고정 \uD83D\uDE80 워✅\uD83D\uDE80 에✅\uD83D\uDE80 르\uD83D\uDE80 나 명시 ✅✅기본 ✅ 용)
     }
 
-    // 1🚀 계: 🚀  🚀 주제 추출 (강력✅SEO 🚀 략 + 🚀 르🚀 나 🚀 용)
-    const langName = config.blog_lang === 'ko' 🚀 'Korean' : 'English';
-    const personaTag = config.selected_persona 🚀 `\n[SPECIFIC_PERSONA]: ${config.selected_persona}` : '';
+    // 1\uD83D\uDE80 계: \uD83D\uDE80  \uD83D\uDE80 주제 추출 (강력✅SEO \uD83D\uDE80 략 + \uD83D\uDE80 르\uD83D\uDE80 나 \uD83D\uDE80 용)
+    const langName = config.blog_lang === 'ko' \uD83D\uDE80 'Korean' : 'English';
+    const personaTag = config.selected_persona \uD83D\uDE80 `\n[SPECIFIC_PERSONA]: ${config.selected_persona}` : '';
 
     const clusterPrompt = `You are a 10-year veteran blog Google SEO expert specializing in Elite Independent Content Strategy.${personaTag}
     Today's date is ${getKST().toISOString().split('T')[0]}. 
@@ -1876,35 +1876,35 @@ async function run() {
     const clusterRes = await callAI(model, clusterPrompt);
     let list = JSON.parse(clean(clusterRes, 'arr'));
 
-    // [Safety Fix] AI가 ["A", "B"] 🚀 ✅[{"title":"A"}, {"title":"B"}] 🚀 태 🚀 🚀경우 처리
+    // [Safety Fix] AI가 ["A", "B"] \uD83D\uDE80 ✅[{"title":"A"}, {"title":"B"}] \uD83D\uDE80 태 \uD83D\uDE80 \uD83D\uDE80경우 처리
     if (Array.isArray(list) && list.length > 0 && typeof list[0] === 'object') {
         list = list.map(item => item.title || item.topic || item.headline || Object.values(item)[0]);
     }
 
-    report(`🚀   [🚀 성✅🚀 러🚀 터 구조]:`);
-    list.forEach((t, i) => report(`   ${i === 0 🚀 '🚀   Pillar' : '🚀   Spoke ' + i}: ${t}`));
+    report(`\uD83D\uDE80   [\uD83D\uDE80 성✅\uD83D\uDE80 러\uD83D\uDE80 터 구조]:`);
+    list.forEach((t, i) => report(`   ${i === 0 \uD83D\uDE80 '\uD83D\uDE80   Pillar' : '\uD83D\uDE80   Spoke ' + i}: ${t}`));
 
     const pillarTitle = list[0]; const spokes = list.slice(1);
     const subLinks = [];
 
-    // [Time Optimization] 🚀  🚀 🚀기 🚀 🚀 간 🚀 정
+    // [Time Optimization] \uD83D\uDE80  \uD83D\uDE80 \uD83D\uDE80기 \uD83D\uDE80 \uD83D\uDE80 간 \uD83D\uDE80 정
     let currentTime = getKST();
     if (config.schedule_time) {
         const [sh, sm] = config.schedule_time.split(':');
         currentTime.setHours(parseInt(sh), parseInt(sm), 0, 0);
     }
 
-    // 2🚀 계: Spoke(🚀 브 글) 먼 🚀 🚀 성 - 🚀 제 URL 🚀 보
+    // 2\uD83D\uDE80 계: Spoke(\uD83D\uDE80 브 글) 먼 \uD83D\uDE80 \uD83D\uDE80 성 - \uD83D\uDE80 제 URL \uD83D\uDE80 보
     for (let i = 0; i < spokes.length; i++) {
-        // [🚀 심] 🚀 덤 지✅🚀 정 ✅'글 🚀 나✅ 1~120 ✅ 덤 🚀 간 🚀 약
+        // [\uD83D\uDE80 심] \uD83D\uDE80 덤 지✅\uD83D\uDE80 정 ✅'글 \uD83D\uDE80 나✅ 1~120 ✅ 덤 \uD83D\uDE80 간 \uD83D\uDE80 약
         if (config.random_delay) {
             const delay = Math.floor(Math.random() * 120) + 1;
             currentTime.setMinutes(currentTime.getMinutes() + delay);
-            report(`🚀   [Spoke ${i + 1}] ${delay} 🚀지✅🚀 약: ${currentTime.toLocaleTimeString('ko-KR')}`);
+            report(`\uD83D\uDE80   [Spoke ${i + 1}] ${delay} \uD83D\uDE80지✅\uD83D\uDE80 약: ${currentTime.toLocaleTimeString('ko-KR')}`);
         } else {
-            // 🚀 덤 지✅미설✅✅기존 5 🚀간격 ( 🚀글🚀  즉시)
+            // \uD83D\uDE80 덤 지✅미설✅✅기존 5 \uD83D\uDE80간격 ( \uD83D\uDE80글\uD83D\uDE80  즉시)
             if (i > 0) currentTime.setMinutes(currentTime.getMinutes() + 5);
-            report(`✅[Spoke ${i + 1}] 5 🚀간격 🚀 약: ${currentTime.toLocaleTimeString('ko-KR')}`);
+            report(`✅[Spoke ${i + 1}] 5 \uD83D\uDE80간격 \uD83D\uDE80 약: ${currentTime.toLocaleTimeString('ko-KR')}`);
         }
 
         const pTime = new Date(currentTime.getTime());
@@ -1913,18 +1913,18 @@ async function run() {
         await new Promise(r => setTimeout(r, 30000));
     }
 
-    // 3🚀 계: Pillar(메인 글) 마 🚀 ✅ 성
-    report(`🚀   최종 메인 🚀 브(Pillar) 글 🚀 성: ${pillarTitle}`);
+    // 3\uD83D\uDE80 계: Pillar(메인 글) 마 \uD83D\uDE80 ✅ 성
+    report(`\uD83D\uDE80   최종 메인 \uD83D\uDE80 브(Pillar) 글 \uD83D\uDE80 성: ${pillarTitle}`);
     if (config.random_delay) {
         const finalDelay = Math.floor(Math.random() * 120) + 1;
         currentTime.setMinutes(currentTime.getMinutes() + finalDelay);
-        report(`🚀   [Pillar] ${finalDelay} 🚀최종 지✅🚀 약: ${currentTime.toLocaleTimeString('ko-KR')}`);
+        report(`\uD83D\uDE80   [Pillar] ${finalDelay} \uD83D\uDE80최종 지✅\uD83D\uDE80 약: ${currentTime.toLocaleTimeString('ko-KR')}`);
     } else {
         currentTime.setMinutes(currentTime.getMinutes() + 5);
     }
 
     const pillarTime = new Date(currentTime.getTime());
     await writeAndPost(model, pillarTitle, config.blog_lang, blogger, config.blog_id, pillarTime, subLinks, 5, 5, config.selected_persona);
-    report('🚀   🚀 리미엄 🚀 러🚀 터 🚀 략 🚀 료!', 'success');
+    report('\uD83D\uDE80   \uD83D\uDE80 리미엄 \uD83D\uDE80 러\uD83D\uDE80 터 \uD83D\uDE80 략 \uD83D\uDE80 료!', 'success');
 }
 run().catch(e => { report(e.message, 'error'); process.exit(1); });
