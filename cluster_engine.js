@@ -712,42 +712,43 @@ function clean(raw, mode = 'text') {
     return txt;
 }
 
-async function callAI(model, prompt) {
+let geminiKeys = (process.env.GEMINI_KEYS_POOL || process.env.GEMINI_API_KEY || "").split(',').map(k => k.trim()).filter(k => k);
+let currentKeyIdx = 0;
+
+async function callAI(model, prompt, retry = 0) {
     try {
-        const res = await model.generateContent(prompt);
-        return res.response.text();
+        if (geminiKeys.length === 0) throw new Error("No Gemini API Keys found.");
+        const genAI = new GoogleGenerativeAI(geminiKeys[currentKeyIdx]);
+        const m = genAI.getGenerativeModel({ model: model });
+        const result = await m.generateContent(prompt);
+        return result.response.text();
     } catch (e) {
-        const msg = e.message.toLowerCase();
-        if (msg.includes('429') || msg.includes('quota') || msg.includes('503') || msg.includes('unavailable')) {
-            report('[API BUSY/QUOTA]: Google servers are busy or quota full. Retrying in 60s...', 'warning');
-            await new Promise(r => setTimeout(r, 60000));
-            return callAI(model, prompt);
+        const isQuota = e.message.includes('429') || e.message.includes('503') || e.message.includes('quota');
+        if (isQuota && retry < geminiKeys.length * 2) {
+            currentKeyIdx = (currentKeyIdx + 1) % geminiKeys.length;
+            report(`⚠️ [KEY ROTATION]: Switching to Gemini Key #${currentKeyIdx + 1} (Reason: ${e.message})`, 'warning');
+            await new Promise(r => setTimeout(r, 2000));
+            return callAI(model, prompt, retry + 1);
         }
+        report(`❌ [AI ERROR]: ${e.message}`, 'error');
         throw e;
     }
 }
 
-async function searchTavily(query, lang) {
+async function searchSerper(query, lang) {
     try {
-        report(`[RESEARCH]: Gathering AI-optimized data for "${query}" via Tavily...`);
-        const apiKey = process.env.TAVILY_API_KEY || process.env.SERPER_API_KEY; // Fallback for transition
-        const res = await axios.post('https://api.tavily.com/search', {
-            api_key: apiKey,
-            query: query,
-            search_depth: "smart",
-            include_answer: true,
-            max_results: 5
-        }, { timeout: 15000 });
-        
-        const data = res.data;
-        const result = { 
-            text: `Summary: ${data.answer || 'No direct answer available.'}\n\n` + 
-                  data.results.map(o => `Title: ${o.title}\nURL: ${o.url}\nContent: ${o.content}`).join('\n\n') 
-        };
-        report(`[RESEARCH SUCCESS]: Analyzed ${data.results.length} high-quality sources.`);
+        report(`[RESEARCH]: Gathering latest AI/Tech data for "${query}" via Serper...`);
+        const q = String(query).replace(/[&]/g, 'and').replace(/[()]/g, ''); // Enhanced cleaning
+        const res = await axios.post('https://google.serper.dev/search', 
+            { q: q, gl: lang === 'ko' ? 'kr' : 'us', hl: lang || 'en' }, 
+            { headers: { 'X-API-KEY': process.env.SERPER_API_KEY, 'Content-Type': 'application/json' }, timeout: 15000 }
+        );
+        const data = res.data.organic || [];
+        const result = { text: data.slice(0, 5).map(o => `Title: ${o.title}\nSnippet: ${o.snippet}`).join('\n\n') };
+        report(`[RESEARCH SUCCESS]: Analyzed top ${data.length} sources.`);
         return result;
     } catch (e) {
-        report(`[TAVILY ERROR]: ${e.message} (Is your Tavily Key valid?)`, 'warning');
+        report(`[SERPER ERROR]: ${e.message} (Is your Serper Key active?)`, 'warning');
         return { text: '' };
     }
 }
@@ -818,7 +819,7 @@ async function genThumbnail(meta, model, ratio = '16:9') {
 
 async function writeAndPost(model, target, lang, blogger, bId, pTime, extraLinks, idx, total, persona) {
     report(`🚀 [${idx}/${total}] 집필 시작: ${target}`);
-    const { text: searchData } = await searchTavily(target, lang);
+    const { text: searchData } = await searchSerper(target, lang);
     const langTag = `\n[TARGET_LANGUAGE]: ${lang === 'ko' ? 'Korean' : 'English'}\n[SPECIFIC_PERSONA]: ${persona}`;
     const btnText = lang === 'ko' ? "\uC790\uC138\uD788 \uBC24\uAE30 \uD83D\uDE80" : "Read More \uD83D\uDE80";
     const prompt = MASTER_GUIDELINE + `\nMISSION: Write a high-quality blog post about ${target} using search data: ${searchData}\n${langTag}`;
