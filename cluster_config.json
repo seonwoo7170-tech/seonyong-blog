@@ -1,11 +1,11 @@
 {
   "blog_id": "7716538272303058488",
-  "blog_lang": "en",
+  "blog_lang": "ko",
   "post_mode": "single",
   "daily_count": 1,
-  "schedule_time": "13:00",
+  "schedule_time": "06:00",
   "random_delay": false,
-  "pillar_topic": "�ڵ�����",
+  "pillar_topic": "자동생성",
   "target_categories": [
     "6"
   ],
